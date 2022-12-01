@@ -1,0 +1,12 @@
+{
+  "request": {
+    "query":"",
+    "selected_facet":null,
+    "selected_personality":null
+  },
+  "response":{
+    "retrieved_result":"",
+    "searched_index":"",
+    "retrieval_score":""
+  }
+}
