@@ -2,11 +2,21 @@
   "request": {
     "query":"",
     "selected_facet":null,
-    "selected_personality":null
+    "selected_personality":null,
+    "session_id":"",
+    "chat_history":{}
   },
   "response":{
+    "chat_history":{},
     "retrieved_result":"",
     "searched_index":"",
     "retrieval_score":""
+  },
+
+  
+  "clear":{
+   "chat_history":{},
+    "session_id":"",
+    "metadata":{}
   }
 }
