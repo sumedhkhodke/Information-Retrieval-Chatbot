@@ -41,8 +41,7 @@ def search_index(core_name, q_text, reddit_topic_filter, bot_personality):
     # ipdb.set_trace()
     if 'chitchat' == core_name.strip().lower():
         bot_personality = bot_personality.strip().lower()
-        # TODO: Debug this index..
-        req_url = solr_url+"fl=id,question,"+bot_personality+",score&indent=true&q.op=OR&q=question:("+q_text+")&rq={!rerank reRankQuery=$rqq reRankDocs=100 reRankWeight=5}&rqq=("+bot_personality+":"+q_text+")&rows=100"
+        req_url = solr_url+"fl=id,question,"+bot_personality+",score&indent=true&q.op=OR&q=question:"+q_text+"&rq={!rerank reRankQuery=$rqq reRankDocs=100 reRankWeight=5}&rqq=("+bot_personality+":"+q_text+")&rows=100"
     else:
         if reddit_topic_filter:
             # what are the valid topics we have in the data??
