@@ -5,18 +5,17 @@ class Database:
     
 
     def __init__(self):
+        # self.mydb = mysql.connector.connect(host="localhost",user="pradhaneva94",password='')
+        # # print("self.mydb: ", self.mydb)
+        
+        # self.mycursor = self.mydb.cursor()
+        
+        # self.mycursor.execute("CREATE DATABASE IRProject4Database")
+
         self.mydb = mysql.connector.connect(host="localhost",user="pradhaneva94",password='', database="IRProject4Database")
-        print("self.mydb: ", self.mydb)
-        
         self.mycursor = self.mydb.cursor()
-        
-        # self.mycursor.execute("CREATE DATABASE IRProject4Database") 
-        # #1st step without database name in self.mydb
-        # self.mycursor.execute("SHOW DATABASES")
-        
-        # self.mycursor.execute("CREATE TABLE IRProject4Table (id INT AUTO_INCREMENT PRIMARY KEY, session_id VARCHAR(255), question VARCHAR(255), answer VARCHAR(255), classifier VARCHAR(255), classifier_probability VARCHAR(255), top_ten_retrieved VARCHAR(255), user_feedback VARCHAR(255), total_retrieved VARCHAR(255))")
-        # #2nd step with only first step commented and table name in self.mydb (should be commented after execution)
-        # self.mycursor.execute("SHOW TABLES")
+        # self.mycursor = self.mydb.cursor()
+        # self.mycursor.execute("CREATE TABLE IRProject4Table (id INT AUTO_INCREMENT PRIMARY KEY, session_id VARCHAR(255), question TEXT(65535), answer TEXT(65535), classifier VARCHAR(255), classifier_probability VARCHAR(255), top_ten_retrieved TEXT(65535), user_feedback VARCHAR(255), total_retrieved VARCHAR(255))")
 
         self.mycursor.execute("SHOW TABLES")
         for x in self.mycursor:
@@ -41,7 +40,7 @@ class Database:
 
     def retrieve_from(self, session_id):
 
-        sql = "SELECT * FROM IRProject4Database WHERE session_id = %s"
+        sql = "SELECT * FROM " + self.table_name + " WHERE session_id = %s"
         adr = session_id
 
         self.mycursor.execute(sql, adr)
@@ -103,6 +102,7 @@ class Database:
 if __name__ == "__main__":
     
     Database_Project4 = Database()
-    
-    Database_Project4.insert_into()
+    # val = ["session_id1", "question1", "answer1", "classifier1", "classifier_probability1", "top_ten_retrieved1", "user_feedback1", "total_retrieved1"]
+
+    Database_Project4.insert_row("session_id1", "question1", "answer1", "classifier1", "classifier_probability1", "top_ten_retrieved1", "user_feedback1", "total_retrieved1")
     # Database_Project4.retrieve_from()
