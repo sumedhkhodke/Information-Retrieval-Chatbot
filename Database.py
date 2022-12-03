@@ -95,8 +95,8 @@ class Database:
 
         self.mydb.commit()
 
-        print(self.mycursor.rowcount, "record inserted.")
-        print("1 record inserted, ID:", self.mycursor.lastrowid)
+        # print(self.mycursor.rowcount, "record inserted.")
+        # print("1 record inserted, ID:", self.mycursor.lastrowid)
         return
             
 if __name__ == "__main__":
