@@ -6,6 +6,8 @@ from configs import HOST, PORT
 from classifier_infer import classifyQuery
 # import ipdb
 
+from Database import Database
+database = Database()
 
 def process_query(query_text, reddit_topic_filter=None, bot_personality='enthusiastic', k=10):
     """
@@ -94,6 +96,17 @@ def main():
             else:
                 p = set(bot_personalities).intersection(set(top_res.keys())).pop()
                 print(top_res[p])
+                
+    core_name = ''
+    if resp['class_pred'] == 'UNKNOWN' or resp['class_pred'] < 0.7:
+        core_name = 'Reddit'
+    else:
+        core_name = 'CC'
+                
+    top_ten_json = json.dumps(resp['docs'])
+                        
+    database.insert_row("0", inp_text, answer, core_name, str(resp['class_pred']), "", "None", resp['total_retrieved'])
+
 
     return
 
