@@ -12,6 +12,7 @@ import re
 from configs import HOST, PORT
 import numpy as np
 import functools
+import Database
 
 from classifier_infer import classifyQuery, rare_terms, DESM, entities, continuity
 
@@ -31,6 +32,8 @@ qa['how'] = ['pure chance','there\'s always a way','just like I said','I don\'t 
 qa['where'] = ['somewhere over the rainbow','right there', 'neither here nor there','in a galaxy far away']
 qa['why'] = ['I find myself in the dark','it\'s obvious, isn\'t it?','damned if I knew']
 qa['when'] = ['just then','a long long time ago','time is a consrtuct']
+
+DB = Database()
 class Chatbot():
     def __init__(self,context=[],personality='enthusiatic'):
         self.personality=personality
@@ -38,6 +41,8 @@ class Chatbot():
         self.topk=50
         self.topic=''
         self.prevq=''
+        self.rt=[]
+        self.entities=[]
     
     def parse_response(self, resp):
         results = []
@@ -54,8 +59,8 @@ class Chatbot():
     
     def update_context(self,q_text):
         bt=[]
-        ents=entities(q_text)
-        for k,v in ents.items():
+        self.ents=entities(q_text)
+        for k,v in self.ents.items():
             if v in ENTS:
                 bt.append(k)
         self.context=bt
@@ -73,7 +78,8 @@ class Chatbot():
         for i in range(len(resp)):
             resp[i]['score']=scores[i]
         resp=list(sorted(resp, key=lambda x:x['score']))
-        
+        resp['desm_score'] = desm
+        resp['bm25_score'] = bm25
         return resp
     
     def formulate_query(self, core_name, q_text, reddit_topic_filter, bot_personality):
@@ -82,8 +88,8 @@ class Chatbot():
             bot_personality = bot_personality.strip().lower()
             req_url = solr_url+"fl=id,question,"+bot_personality+",score&indent=true&q.op=OR&q=question:("+q_text+")&rows=1"
         else:
-            rt=rare_terms(q_text)
-            rt=functools.reduce(lambda a,b: a+' '+b, rt)
+            self.rt=rare_terms(q_text)
+            rt=functools.reduce(lambda a,b: a+' '+b, self.rt)
             ents=entities(q_text)
             bt=[]
             for k,v in ents.items():
@@ -148,19 +154,23 @@ class Chatbot():
             return resp['docs'][-1]['body']
         return resp['docs'][0][self.personality]
     
-    def process_query(self,query_text, reddit_topic_filter=None, bot_personality='enthusiastic'):
+    def process_query(self, session_id, query_text, reddit_topic_filter=None, bot_personality='enthusiastic', reset_context=False):
         """
             reddit_topic_filter: str from Politics, Healthcare, Education, Environment, Technology
             bot_personality: str from witty, enthusiastic, professional, friendly, caring
             k: int -> max num of documents to return from query result (for analytics)
             returns: dict
                     {
-                        'class_pred': float -> represents prob of querying chitchat dataset 
-                        'total_docs_retrieved' -> from the query (for analytics)
-                        'docs' -> list of dict containing the retrieved results
+                        'answer' -> chatbot response selected from docs,
+                        'explain' -> {'index_queried':, 'classifier_prob': , 'rare_terms_boosted': , 'entities_boosted': , 'context_terms_boosted': 'top_docs_retrieved': }
+                        'query_id' -> populated from db after saving.
                     }
         """
-        
+
+        # Flush context based on session
+        if reset_context:
+            self.context = []
+
         cc_class_thresh = 0.5
         class_pred = classifyQuery(query_text)
         if class_pred == 'UNKNOWN' or class_pred <= cc_class_thresh:
@@ -179,7 +189,20 @@ class Chatbot():
         
         resp['answer'] = self.fetch_answer_from_resp(resp, bot_personality)
 
-        return resp
+        # SAVE TO DB  
+        # desm_score = None if not resp['docs'] else resp['docs'][0]['desm_score']
+        # bm25_score = None if not resp['docs'] else resp['docs'][0]['bm25_score']
+        resp['query_id'] = DB.insert_row(session_id=session_id, question=query_text, 
+        answer=resp['answer'], classifier=(resp['class_pred'] > cc_class_thresh).astype(int),
+         classifier_probability=resp['class_pred'], top_ten_retrieved=resp['docs'], total_retrieved=resp['total retrieved'],
+        selected_topic=reddit_topic_filter, selected_bot_personality = bot_personality)
+
+        resp['explain'] = {'index_queried': 'Reddit' if core_name.lower() == 'reddit' else 'Chitchat', 
+        'classifier_prob': resp['class_pred'], 'rare_terms_boosted': self.rt, 'entities_boosted': self.entities,
+        'context_terms_boosted': self.context, 'top_docs_retrieved': resp['docs']}
+
+        return {'query_id': resp['query_id'], 'answer': resp['answer'], 'explain': resp['explain']}
+
 
 def main():
     bot=Chatbot()
