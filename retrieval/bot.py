@@ -175,7 +175,7 @@ class Chatbot():
         # Flush context based on session
         if reset_context:
             self.context = []
-
+        bot_personality = bot_personality.lower()
         cc_class_thresh = 0.5
         class_pred = classifyQuery(query_text)
         if class_pred == 'UNKNOWN' or class_pred <= cc_class_thresh:

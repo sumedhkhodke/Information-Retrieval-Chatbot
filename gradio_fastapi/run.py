@@ -34,7 +34,6 @@ try:
         state = state or []
         session_id='239843d9-741e-11ed-8648-e02be9d57d03' 
         session_id = get_session(state,session_id)
-        personality=personality.lowercase()
         dic={}
         dic['query_text']=message
         dic['personality']=personality
