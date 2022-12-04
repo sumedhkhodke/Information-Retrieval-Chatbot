@@ -99,9 +99,9 @@ try:
 
         with gr.Tab("Visualization"):
             gr.Markdown("Look at me...")
-        q_id_placeholder_component = gr.Textbox(visible=False)
-        explainability = gr.Textbox(visible=False)
-        submit_button.click(chat, inputs=[message, state, personality, faceted_key], outputs=[chatbot, state,q_id_placeholder_component])#,explainability])
+        # q_id_placeholder_component = gr.Textbox(visible=False)
+        # explainability = gr.Textbox(visible=False)
+        submit_button.click(chat, inputs=[message, state, personality, faceted_key], outputs=[chatbot, state])#,q_id_placeholder_component,explainability])
         clear_button.click(clear, inputs=[message, state, personality, faceted_key], outputs=[chatbot, state])
         feedback_button.click(feedback, inputs=[feedback_radio, q_id_placeholder_component])
     # demo.launch()
