@@ -32,6 +32,7 @@ try:
 
     def chat(message, state, personality, faceted_key,session_id):
         state = state or []
+        session_id='239843d9-741e-11ed-8648-e02be9d57d03' 
         session_id = get_session(state,session_id)
         dic={}
         dic['query_text']=message
@@ -98,11 +99,10 @@ try:
 
         with gr.Tab("Visualization"):
             gr.Markdown("Look at me...")
-        gr.Tex
         q_id_placeholder_component = gr.Textbox(visible=False)
         explainability = gr.Textbox(visible=False)
-        submit_button.click(chat, inputs=[message, state, personality, faceted_key,session_id], outputs=[chatbot, state,q_id_placeholder_component])#,explainability])
-        clear_button.click(clear, inputs=[message, state, personality, faceted_key,session_id], outputs=[chatbot, state])
+        submit_button.click(chat, inputs=[message, state, personality, faceted_key], outputs=[chatbot, state,q_id_placeholder_component])#,explainability])
+        clear_button.click(clear, inputs=[message, state, personality, faceted_key], outputs=[chatbot, state])
         feedback_button.click(feedback, inputs=[feedback_radio, q_id_placeholder_component])
     # demo.launch()
     app = gr.mount_gradio_app(app, demo, path="/TheCodeLinguists")
