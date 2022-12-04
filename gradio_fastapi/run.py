@@ -72,7 +72,7 @@ try:
         return gr.Dropdown(['None','Technology','Education','Healthcare','Politics','Environment'],label='Faceted search',value='None')
 
 
-    with gr.Blocks() as demo:
+    with gr.Blocks(css="footer {visibility: hidden}") as demo:
         gr.Markdown("""
         <p style="text-align:center">Chatbot by TheCodeLinguists</p>
         """)
