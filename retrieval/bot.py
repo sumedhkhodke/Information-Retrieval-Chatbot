@@ -12,7 +12,7 @@ import re
 from configs import HOST, PORT
 import numpy as np
 import functools
-from Database import Database
+# from Database import Database
 
 from classifier_infer import classifyQuery, rare_terms, DESM, entities, continuity
 
@@ -33,7 +33,7 @@ qa['where'] = ['somewhere over the rainbow','right there', 'neither here nor the
 qa['why'] = ['I find myself in the dark','it\'s obvious, isn\'t it?','damned if I knew']
 qa['when'] = ['just then','a long long time ago','time is a consrtuct']
 
-DB = Database()
+# DB = Database()
 class Chatbot():
     def __init__(self,context=[],personality='enthusiatic'):
         self.personality=personality
@@ -46,7 +46,8 @@ class Chatbot():
         # self.db = Database()
     
     def update_feedback(self,q_id,feedback):
-        DB.update_feedback_by_id(q_id,feedback)
+        # DB.update_feedback_by_id(q_id,feedback)
+        pass
     
     def parse_response(self, resp):
         results = []
@@ -196,11 +197,11 @@ class Chatbot():
         # SAVE TO DB  
         # desm_score = None if not resp['docs'] else resp['docs'][0]['desm_score']
         # bm25_score = None if not resp['docs'] else resp['docs'][0]['bm25_score']
-        resp['query_id'] = DB.insert_row(session_id=session_id, question=query_text, 
-        answer=resp['answer'], classifier=(resp['class_pred'] > cc_class_thresh).astype(int),
-         classifier_probability=resp['class_pred'], top_ten_retrieved=resp['docs'], total_retrieved=resp['total retrieved'],
-        selected_topic=reddit_topic_filter, selected_bot_personality = bot_personality)
-
+        # resp['query_id'] = DB.insert_row(session_id=session_id, question=query_text, 
+        # answer=resp['answer'], classifier=(resp['class_pred'] > cc_class_thresh).astype(int),
+        #  classifier_probability=resp['class_pred'], top_ten_retrieved=resp['docs'], total_retrieved=resp['total retrieved'],
+        # selected_topic=reddit_topic_filter, selected_bot_personality = bot_personality)
+        resp['query_id'] = 42
         resp['explain'] = {'index_queried': 'Reddit' if core_name.lower() == 'reddit' else 'Chitchat', 
         'classifier_prob': resp['class_pred'], 'rare_terms_boosted': self.rt, 'entities_boosted': self.entities,
         'context_terms_boosted': self.context, 'top_docs_retrieved': resp['docs']}
