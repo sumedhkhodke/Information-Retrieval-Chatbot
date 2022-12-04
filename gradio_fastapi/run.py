@@ -30,7 +30,7 @@ try:
     def get_session(state, session_id):
         return uuid.uuid4() if state is None else session_id
 
-    def chat(message, state, personality, faceted_key):
+    def chat(message, state, personality, faceted_key,session_id):
         state = state or []
         session_id = get_session(state,session_id)
         dic={}
@@ -101,8 +101,8 @@ try:
         
         q_id_placeholder_component = gr.Textbox(visible=False)
         explainability = gr.Textbox(visible=False)
-        submit_button.click(chat, inputs=[message, state, personality, faceted_key], outputs=[chatbot, state,q_id_placeholder_component,explainability])
-        clear_button.click(clear, inputs=[message, state, personality, faceted_key], outputs=[chatbot, state])
+        submit_button.click(chat, inputs=[message, state, personality, faceted_key,session_id], outputs=[chatbot, state,q_id_placeholder_component,explainability])
+        clear_button.click(clear, inputs=[message, state, personality, faceted_key,session_id], outputs=[chatbot, state])
         feedback_button.click(feedback, inputs=[feedback_radio, q_id_placeholder_component])
     # demo.launch()
     app = gr.mount_gradio_app(app, demo, path="/TheCodeLinguists")
