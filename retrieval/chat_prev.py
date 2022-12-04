@@ -38,20 +38,20 @@ DEFAULT_RESPONSES = {
     'friendly': "Sorry, what do you mean?",
     'enthusiastic': "Sorry, I couldn't understand that, would you mind asking something else or elaborating?",
 }
+CONTEXT = []
 
-def process_query(query_text, reddit_topic_filter=None, bot_personality='enthusiastic', k=10):
+def process_query(session, query_text, reddit_topic_filter=None, bot_personality='enthusiastic', k=10):
     """
         reddit_topic_filter: str from Politics, Healthcare, Education, Environment, Technology
         bot_personality: str from witty, enthusiastic, professional, friendly, caring
         k: int -> max num of documents to return from query result (for analytics)
         returns: dict
                 {
-                    'class_pred': float -> represents prob of querying chitchat dataset 
-                    'total_docs_retrieved' -> from the query (for analytics)
-                    'docs' -> list of dict containing the retrieved results
+                    'answer' -> chatbot response selected from docs,
+                    'query_id' -> populated from db after saving.
                 }
     """
-    
+    # TODO: Add logic for resetting context..
     cc_class_thresh = 0.7
     class_pred = classifyQuery(query_text)
     if class_pred == 'UNKNOWN' or class_pred < cc_class_thresh:
@@ -67,6 +67,11 @@ def process_query(query_text, reddit_topic_filter=None, bot_personality='enthusi
 
     resp['answer'] = fetch_answer_from_resp(resp['docs'], bot_personality)
     # val = [session_id, question, answer, classifier, classifier_probability, top_ten_retrieved, user_feedback, total_retrieved]
+    # SAVE TO DB
+    # 'class_pred': float -> represents prob of querying chitchat dataset 
+    # 'total_docs_retrieved' -> from the query (for analytics)
+    # 'docs' -> list of dict containing the retrieved results
+
     # ans = resp['docs']
     # DB.insert_row(str(uuid.uuid4()), query_text, , core_name, str(resp['class_pred']), "", "None", resp['total_retrieved'])
 
@@ -86,7 +91,7 @@ def search_index(core_name, q_text, reddit_topic_filter, bot_personality):
             # what are the valid topics we have in the data??
             # Politics, Environment, Education, Techonology, Healthcare
             reddit_topic_filter = reddit_topic_filter.strip().title()
-            req_url = solr_url+"fl=id,parent_body,body,score&indent=true&q.op=OR&q=parent_body:"+q_text+"&fq=topic:"+reddit_topic_filter+"&rq={!rerank reRankQuery=$rqq reRankDocs=10 reRankWeight=5}&rqq=body:("+rt+")&rows=10"
+            req_url = solr_url+"fl=id,parent_body,body,score&indent=true&q.op=OR&q=parent_body:("+q_text+")&fq=topic:"+reddit_topic_filter+"&rq={!rerank reRankQuery=$rqq reRankDocs=10 reRankWeight=5}&rqq=body:("+rt+")&rows=10"
         else:
             req_url = solr_url+"fl=id,parent_body,body,score&indent=true&q.op=OR&q=parent_body:("+q_text+")&rq={!rerank reRankQuery=$rqq reRankDocs=10 reRankWeight=5}&rqq=body:("+rt+")&rows=10"
             #req_url = solr_url+"fl=id,parent_body,body,score&indent=true&q.op=OR&q=parent_body:("+q_text+")&rows=10"
