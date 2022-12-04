@@ -17,7 +17,12 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from string import punctuation
 import gensim.downloader as gd
+# from sklearn.linear_model import LogisticRegression
+from scipy.special import expit
 import pickle
+from sentence_transformers import SentenceTransformer, util
+import spacy
+import en_core_web_lg
 
 stopwords=stopwords.words('english')
 punctuation=list(punctuation)
@@ -27,9 +32,12 @@ print('loading glove embeddings')
 tv = gd.load('glove-twitter-100')
 print('loaded glove-twitter-100 embeddings!')
 
+st = SentenceTransformer('all-mpnet-base-v2')
+
+nlp=spacy.load("en_core_web_lg")
 
 # weights = np.load('params.npy')
-with open('params.pickle', 'rb') as f:
+with open('params_lem.pickle', 'rb') as f:
     model = pickle.load(f)
 
 with open('idf_data.pickle', 'rb') as f:
@@ -37,6 +45,80 @@ with open('idf_data.pickle', 'rb') as f:
 
 corpus_size = len(idf.keys())
 
+# def classifyQuery(q):
+#     qe=[]
+#     y=word_tokenize(q)
+#     t=[z for z in y if z not in stopwords and z not in punctuation]
+#     for x in t:
+#         try:
+#             qv=tv.get_vector(x)
+#             qv=qv/np.linalg.norm(qv)
+#             qe.append(qv)
+#         except:
+#             pass
+#     # print(qe)
+#     if qe:
+#         X = np.mean(qe,axis=0).reshape((1,100))
+
+#         classifier_pred = expit(np.sum(weights * X))
+        
+#         return classifier_pred
+
+#     return "UNKNOWN"
+
+# DEBUG = False
+'''
+def DESM(q, d):
+    qt=word_tokenize(q)
+    dt=word_tokenize(d)
+    qt=[x for x in qt if x not in punctuation]
+    dt=[x for x in dt if x not in punctuation]
+    dv=np.zeros(100)
+    score=0
+    for x in dt:
+        try:
+            dv+=(tv.get_vector(x)/np.linalg.norm(tv.get_vector(x)))
+        except:
+            pass
+    try:
+        dv=dv/len(dt)
+    except:
+        pass
+    for x in qt:
+        try:
+            score+=np.sum((tv.get_vector(x)/np.linalg.norm(tv.get_vector(x)))*dv)
+        except:
+            pass
+    try:
+        score=score/len(qt)
+    except:
+        pass        
+    return score
+'''
+def entities(q):
+    entities={}
+    nes=nlp(q)
+    for x in nes.ents:
+        entities[x.text]=x.label_
+    return entities
+
+def continuity(q1,q2):
+    qv=st.encode(q1)
+    dv=st.encode(q2)
+    score=util.cos_sim(qv,dv)     
+    return abs(float(score[0][0])) >= 0.5
+
+def DESM(q, d):
+    qt=word_tokenize(q)
+    dt=word_tokenize(d)
+    qt=[x for x in qt if x not in stopwords and x not in punctuation]
+    dt=[x for x in dt if x not in stopwords and x not in punctuation]
+    qt=functools.reduce(lambda a,b: a+' '+b,qt)
+    dt=functools.reduce(lambda a,b: a+' '+b,dt)
+    qv=st.encode(qt)
+    dv=st.encode(dt)
+    score=util.cos_sim(qv,dv)     
+    return float(score[0][0])
 
 def rare_terms(q_text):
     boost_terms=[]
