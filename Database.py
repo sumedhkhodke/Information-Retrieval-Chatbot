@@ -40,19 +40,19 @@ class Database:
     
     
     
-    def insert_into(self, column_name, column_value):
+    # def insert_into_column(self, column_name, column_value = "NULL"):
 
-        sql = "INSERT INTO " + self.table_name + " (" + column_name +") VALUES (%s)"
-        val = column_value
-        self.mycursor.execute(sql, val)
+    #     sql = "INSERT INTO " + self.table_name + " (" + column_name +") VALUES (%s)"
+    #     val = column_value
+    #     self.mycursor.execute(sql, val)
 
-        self.mydb.commit()
+    #     self.mydb.commit()
 
-        print(self.mycursor.rowcount, "record inserted.")
-        print("1 record inserted, ID:", self.mycursor.lastrowid)
+    #     print(self.mycursor.rowcount, "record inserted.")
+    #     print("1 record inserted, ID:", self.mycursor.lastrowid)
         
         
-    def update_feedback_by_id(self, feedback, id):
+    def update_feedback_by_id(self, id, feedback = "NULL"):
     
         sql = "UPDATE customers SET user_feedback = "+ feedback +" WHERE id = " + id
         # val = column_value
@@ -92,7 +92,7 @@ class Database:
     def drop_all(self, id):
         return
     
-    def update_column_by_id(self, column, value, id):
+    def update_column_by_id(self, column, id, value = "NULL"):
         
         sql = "UPDATE customers SET "+ column +" = "+ value +" WHERE id = " + id
 
@@ -114,7 +114,7 @@ class Database:
             
         return x
     
-    def insert_row(self, session_id, question, answer, classifier, classifier_probability, top_ten_retrieved, user_feedback, total_retrieved, DESM_score, selected_topic, selected_bot_personality, meta = "None"):
+    def insert_row(self, session_id = "NULL", question = "NULL", answer = "NULL", classifier = "NULL", classifier_probability = "NULL", top_ten_retrieved = "NULL", user_feedback = "NULL", total_retrieved = "NULL", DESM_score = "NULL", selected_topic = "NULL", selected_bot_personality = "NULL", meta = "NULL"):
 
         sql = "INSERT INTO " + self.table_name + " (session_id, question, answer, classifier, classifier_probability, top_ten_retrieved, user_feedback, total_retrieved,  DESM_score, selected_topic, selected_bot_personality, meta) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
         val = [session_id, question, answer, classifier, classifier_probability, top_ten_retrieved, user_feedback, total_retrieved,  DESM_score, selected_topic, selected_bot_personality, meta]
