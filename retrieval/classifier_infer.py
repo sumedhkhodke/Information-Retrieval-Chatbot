@@ -18,6 +18,7 @@ from nltk.corpus import stopwords
 from string import punctuation
 import gensim.downloader as gd
 import pickle
+from configs import RETR_PATH
 
 stopwords=stopwords.words('english')
 punctuation=list(punctuation)
@@ -29,10 +30,10 @@ print('loaded glove-twitter-100 embeddings!')
 
 
 # weights = np.load('params.npy')
-with open('params.pickle', 'rb') as f:
+with open(RETR_PATH+'params_lem.pickle', 'rb') as f:
     model = pickle.load(f)
 
-with open('idf_data.pickle', 'rb') as f:
+with open(RETR_PATH+'idf_data.pickle', 'rb') as f:
     idf = pickle.load(f)
 
 corpus_size = len(idf.keys())

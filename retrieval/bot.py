@@ -12,7 +12,7 @@ import re
 from configs import HOST, PORT
 import numpy as np
 import functools
-import Database
+from Database import Database
 
 from classifier_infer import classifyQuery, rare_terms, DESM, entities, continuity
 
@@ -43,6 +43,10 @@ class Chatbot():
         self.prevq=''
         self.rt=[]
         self.entities=[]
+        # self.db = Database()
+    
+    def update_feedback(self,q_id,feedback):
+        DB.update_feedback_by_id(q_id,feedback)
     
     def parse_response(self, resp):
         results = []
@@ -70,10 +74,10 @@ class Chatbot():
         for doc in resp:
             desm.append(DESM(q_text, doc['body']))
         bm25=np.array([x['score'] for x in resp])
-        print(bm25)
+        # print(bm25)
         bm25=(bm25-np.min(bm25))/(np.max(bm25)-np.min(bm25))
-        print(bm25)
-        print(desm)
+        # print(bm25)
+        # print(desm)
         scores=list(0.3*(np.array(desm)+0.7*bm25))
         for i in range(len(resp)):
             resp[i]['score']=scores[i]
