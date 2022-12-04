@@ -48,7 +48,7 @@ try:
         response_id=response['query_id']
         explain=response['explain']
         state.append((message, bot_response))
-        return state, state, response_id,explain
+        return state, state, response_id#,explain
 
     def clear(message, state, personality, faceted_key):
         state = gr.State()
@@ -98,10 +98,10 @@ try:
 
         with gr.Tab("Visualization"):
             gr.Markdown("Look at me...")
-        
+        gr.Tex
         q_id_placeholder_component = gr.Textbox(visible=False)
         explainability = gr.Textbox(visible=False)
-        submit_button.click(chat, inputs=[message, state, personality, faceted_key,session_id], outputs=[chatbot, state,q_id_placeholder_component,explainability])
+        submit_button.click(chat, inputs=[message, state, personality, faceted_key,session_id], outputs=[chatbot, state,q_id_placeholder_component])#,explainability])
         clear_button.click(clear, inputs=[message, state, personality, faceted_key,session_id], outputs=[chatbot, state])
         feedback_button.click(feedback, inputs=[feedback_radio, q_id_placeholder_component])
     # demo.launch()
