@@ -18,7 +18,7 @@ try:
     def read_main():
         return {"message": "This is the parent app"}
 
-    session_id=None    
+    session_id='239843d9-741e-11ed-8648-e02be9d57d03'    
     class Button_(gr.Button):
         def click(self, *args, **kwargs):
             super().click(*args, **{**kwargs, **dict(inputs=None, outputs=None)})
