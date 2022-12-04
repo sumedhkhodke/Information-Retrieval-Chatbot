@@ -12,7 +12,7 @@ class Database:
     def __init__(self):
         # self.mydb = mysql.connector.connect(host="34.125.74.143",user="pradhaneva94",password='', database="IRProject4Database")
         # self.mydb = mysql.connector.connect(host="10.84.174.128",user="pradhaneva94",password='', database="IRProject4Database")
-        self.mydb = mysql.connector.connect(host="localhost",user="pradhaneva94",password='', database="IRProject4Database")
+        self.mydb = mysql.connector.connect(host="localhost",user="root",password='p4', database="IRProject4Database")
         print("self.mydb: ", self.mydb)
         
         self.mycursor = self.mydb.cursor()
