@@ -2,6 +2,11 @@ import mysql.connector
 
 
 class Database:
+    # mydb = mysql.connector.connect(host="localhost",user="pradhaneva94",password='')
+    # mycursor = mydb.cursor()
+    # mycursor.execute("CREATE DATABASE IRProject4Database")
+    # mycursor.execute("CREATE TABLE IRProject4Table (id INT AUTO_INCREMENT PRIMARY KEY, session_id VARCHAR(255), question VARCHAR(255), answer VARCHAR(255), classifier VARCHAR(255), classifier_probability VARCHAR(255), top_ten_retrieved VARCHAR(255), user_feedback VARCHAR(255), total_retrieved VARCHAR(255), DESM_score VARCHAR(255), selected_topic VARCHAR(255), selected_bot_personality VARCHAR(255))")
+
     
 
     def __init__(self):
@@ -31,6 +36,18 @@ class Database:
         sql = "INSERT INTO " + self.table_name + " (" + column_name +") VALUES (%s)"
         val = column_value
         self.mycursor.execute(sql, val)
+
+        self.mydb.commit()
+
+        print(self.mycursor.rowcount, "record inserted.")
+        print("1 record inserted, ID:", self.mycursor.lastrowid)
+        
+        
+    def update_feedback_by_id(self, feedback, id):
+    
+        sql = "UPDATE customers SET user_feedback = "+ feedback +" WHERE id = " + id
+        # val = column_value
+        self.mycursor.execute(sql)
 
         self.mydb.commit()
 
@@ -98,7 +115,7 @@ class Database:
 
         print(self.mycursor.rowcount, "record inserted.")
         print("1 record inserted, ID:", self.mycursor.lastrowid)
-        return
+        return self.mycursor.lastrowid
             
 if __name__ == "__main__":
     
