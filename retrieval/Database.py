@@ -12,7 +12,7 @@ class Database:
     def __init__(self):
         # self.mydb = mysql.connector.connect(host="34.125.74.143",user="pradhaneva94",password='', database="IRProject4Database")
         # self.mydb = mysql.connector.connect(host="10.84.174.128",user="pradhaneva94",password='', database="IRProject4Database")
-        self.mydb = mysql.connector.connect(host="localhost",user="root",password='p4', database="IRProject4Database")
+        self.mydb = mysql.connector.connect(host="localhost",user="pradhaneva94",password='', database="IRProject4Database")
         print("self.mydb: ", self.mydb)
         
         self.mycursor = self.mydb.cursor()
@@ -56,7 +56,7 @@ class Database:
         
     def update_feedback_by_id(self, feedback, id):
     
-        sql = "UPDATE customers SET user_feedback = "+ feedback +" WHERE id = " + id
+        sql = "UPDATE " + self.table_name + " SET user_feedback = "+ feedback +" WHERE id = " + id
         # val = column_value
         self.mycursor.execute(sql)
 
@@ -96,7 +96,7 @@ class Database:
     
     def update_column_by_id(self, column, value, id):
         
-        sql = "UPDATE customers SET "+ column +" = "+ value +" WHERE id = " + id
+        sql = "UPDATE "+ self.table_name +" SET "+ column +" = "+ value +" WHERE id = " + id
 
         self.mycursor.execute(sql)
 
@@ -133,4 +133,4 @@ if __name__ == "__main__":
     Database_Project4 = Database()
     
     Database_Project4.insert_row("session_id1", "question1", "answer1", "classifier1", "classifier_probability1", "top_ten_retrieved1", "user_feedback1", "total_retrieved1", "DESM_score1", "selected_topic1", "selected_bot_personality1")
-    # Database_Project4.retrieve_from()
+    Database_Project4.update_feedback_by_id("1", "2")
