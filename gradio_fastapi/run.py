@@ -30,7 +30,7 @@ try:
     def get_session(state, session_id):
         return uuid.uuid4() if state is None else session_id
 
-    def chat(message, state, personality, faceted_key,session_id):
+    def chat(message, state, personality, faceted_key):
         state = state or []
         session_id='239843d9-741e-11ed-8648-e02be9d57d03' 
         session_id = get_session(state,session_id)
@@ -72,7 +72,7 @@ try:
         return gr.Dropdown(['None','Technology','Education','Healthcare','Politics','Environment'],label='Faceted search',value='None')
 
 
-    with gr.Blocks() as demo:
+    with gr.Blocks(css="footer {visibility: hidden}") as demo:
         gr.Markdown("""
         <p style="text-align:center">Chatbot by TheCodeLinguists</p>
         """)
