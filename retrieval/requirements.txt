@@ -2,6 +2,7 @@
 requests
 pysolr>=3.9.0
 nltk
+spacy
 pandas
 scikit-learn==1.1.3
 gensim>=4.2

@@ -77,14 +77,18 @@ class Chatbot():
         bm25=np.array([x['score'] for x in resp])
         # print(bm25)
         bm25=(bm25-np.min(bm25))/(np.max(bm25)-np.min(bm25))
+
         # print(bm25)
         # print(desm)
+
         scores=list(0.3*(np.array(desm)+0.7*bm25))
         for i in range(len(resp)):
             resp[i]['score']=scores[i]
+            resp[i]['desm_score'] = desm[i]
+            resp[i]['bm25_score'] = bm25[i]
         resp=list(sorted(resp, key=lambda x:x['score']))
-        resp['desm_score'] = desm
-        resp['bm25_score'] = bm25
+        # resp['desm_score'] = desm
+        # resp['bm25_score'] = bm25
         return resp
     
     def formulate_query(self, core_name, q_text, reddit_topic_filter, bot_personality):
@@ -175,7 +179,7 @@ class Chatbot():
         # Flush context based on session
         if reset_context:
             self.context = []
-
+        bot_personality = bot_personality.lower()
         cc_class_thresh = 0.5
         class_pred = classifyQuery(query_text)
         if class_pred == 'UNKNOWN' or class_pred <= cc_class_thresh:
@@ -219,9 +223,9 @@ def main():
         # if len(inp_text) == 1 and inp_text in qa.keys():
         #     resp['answer']=np.random.choice(qa[inp_text])
         #ipdb.set_trace()
-        resp = bot.process_query(inp_text)
+        resp = bot.process_query("", inp_text)
         # print(results)
-        print(resp['class_pred'])
+        # print(resp['class_pred'])
         print(resp['answer'])
 
     return

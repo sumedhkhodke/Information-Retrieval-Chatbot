@@ -30,8 +30,9 @@ try:
     def get_session(state, session_id):
         return uuid.uuid4() if state is None else session_id
 
-    def chat(message, state, personality, faceted_key,session_id):
+    def chat(message, state, personality, faceted_key):
         state = state or []
+        session_id='239843d9-741e-11ed-8648-e02be9d57d03' 
         session_id = get_session(state,session_id)
         dic={}
         dic['query_text']=message
@@ -48,7 +49,7 @@ try:
         response_id=response['query_id']
         explain=response['explain']
         state.append((message, bot_response))
-        return state, state, response_id,explain
+        return state, state, response_id#,explain
 
     def clear(message, state, personality, faceted_key):
         state = gr.State()
@@ -71,7 +72,7 @@ try:
         return gr.Dropdown(['None','Technology','Education','Healthcare','Politics','Environment'],label='Faceted search',value='None')
 
 
-    with gr.Blocks() as demo:
+    with gr.Blocks(css="footer {visibility: hidden}") as demo:
         gr.Markdown("""
         <p style="text-align:center">Chatbot by TheCodeLinguists</p>
         """)
@@ -98,12 +99,11 @@ try:
 
         with gr.Tab("Visualization"):
             gr.Markdown("Look at me...")
-        
-        q_id_placeholder_component = gr.Textbox(visible=False)
-        explainability = gr.Textbox(visible=False)
-        submit_button.click(chat, inputs=[message, state, personality, faceted_key,session_id], outputs=[chatbot, state,q_id_placeholder_component,explainability])
-        clear_button.click(clear, inputs=[message, state, personality, faceted_key,session_id], outputs=[chatbot, state])
-        feedback_button.click(feedback, inputs=[feedback_radio, q_id_placeholder_component])
+        # q_id_placeholder_component = gr.Textbox(visible=False)
+        # explainability = gr.Textbox(visible=False)
+        submit_button.click(chat, inputs=[message, state, personality, faceted_key], outputs=[chatbot, state])#,q_id_placeholder_component,explainability])
+        clear_button.click(clear, inputs=[message, state, personality, faceted_key], outputs=[chatbot, state])
+        feedback_button.click(feedback, inputs=[feedback_radio])#, q_id_placeholder_component])
     # demo.launch()
     app = gr.mount_gradio_app(app, demo, path="/TheCodeLinguists")
 
