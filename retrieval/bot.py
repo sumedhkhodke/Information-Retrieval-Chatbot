@@ -12,7 +12,8 @@ import re
 from configs import HOST, PORT
 import numpy as np
 import functools
-# from Database import Database
+from Database import Database
+# import ipdb
 
 from classifier_infer import classifyQuery, rare_terms, DESM, entities, continuity
 
@@ -26,6 +27,7 @@ DEFAULT_RESPONSES = {
     'enthusiastic': "Sorry, I couldn't understand that, would you mind asking something else or elaborating?",
 }
 
+
 qa={}
 qa['what'] = ['you heard right','please expand your query','yeah!','pay attention','slow on the uptake?']
 qa['how'] = ['pure chance','there\'s always a way','just like I said','I don\'t know','wish I knew how']
@@ -33,7 +35,7 @@ qa['where'] = ['somewhere over the rainbow','right there', 'neither here nor the
 qa['why'] = ['I find myself in the dark','it\'s obvious, isn\'t it?','damned if I knew']
 qa['when'] = ['just then','a long long time ago','time is a consrtuct']
 
-# DB = Database()
+DB = Database()
 class Chatbot():
     def __init__(self,context=[],personality='enthusiatic'):
         self.personality=personality
@@ -42,11 +44,11 @@ class Chatbot():
         self.topic=''
         self.prevq=''
         self.rt=[]
-        self.entities=[]
+        self.ents=[]
         # self.db = Database()
     
     def update_feedback(self,q_id,feedback):
-        # DB.update_feedback_by_id(q_id,feedback)
+        DB.update_feedback_by_id(q_id,feedback)
         pass
     
     def parse_response(self, resp):
@@ -98,7 +100,11 @@ class Chatbot():
             req_url = solr_url+"fl=id,question,"+bot_personality+",score&indent=true&q.op=OR&q=question:("+q_text+")&rows=1"
         else:
             self.rt=rare_terms(q_text)
-            rt=functools.reduce(lambda a,b: a+' '+b, self.rt)
+            try:
+                rt=functools.reduce(lambda a,b: a+' '+b, self.rt)
+            except:
+                rt = ''
+
             ents=entities(q_text)
             bt=[]
             for k,v in ents.items():
@@ -147,7 +153,7 @@ class Chatbot():
         #         req_url = solr_url+"fl=id,parent_body,body,score&indent=true&q.op=OR&q=parent_body:"+q_text+"&fq=topic:"+reddit_topic_filter+"&rq={!rerank reRankQuery=$rqq reRankDocs=10 reRankWeight=2}&rqq=body:("+rt+")&rows="+str(self.topk)
         #     else:
         #         req_url = solr_url+"fl=id,parent_body,body,score&indent=true&q.op=OR&q=parent_body:("+q_text+")&rq={!rerank reRankQuery=$rqq reRankDocs=10 reRankWeight=2}&rqq=body:("+rt+")&rows="+str(self.topk)
-        print(url)
+        # print(url)
         resp = requests.get(url)
         results = self.parse_response(resp)
         self.update_context(q_text)
@@ -193,21 +199,22 @@ class Chatbot():
         # return only top k documents...
         resp['docs'] = resp['docs'][:self.topk]
         
-        if core_name == 'Reddit':
-            resp['docs'] = self.update_scores(query_text,resp['docs'])
         
         resp['answer'] = self.fetch_answer_from_resp(resp, bot_personality)
+
+        if core_name == 'Reddit':
+            resp['docs'] = self.update_scores(query_text,resp['docs'])
 
         # SAVE TO DB  
         # desm_score = None if not resp['docs'] else resp['docs'][0]['desm_score']
         # bm25_score = None if not resp['docs'] else resp['docs'][0]['bm25_score']
-        # resp['query_id'] = DB.insert_row(session_id=session_id, question=query_text, 
-        # answer=resp['answer'], classifier=(resp['class_pred'] > cc_class_thresh).astype(int),
-        #  classifier_probability=resp['class_pred'], top_ten_retrieved=resp['docs'], total_retrieved=resp['total retrieved'],
-        # selected_topic=reddit_topic_filter, selected_bot_personality = bot_personality)
-        resp['query_id'] = 42
+        resp['query_id'] = DB.insert_row(session_id=session_id, question=query_text, 
+        answer=resp['answer'], classifier=int(resp['class_pred'] > cc_class_thresh),
+         classifier_probability=resp['class_pred'], top_ten_retrieved=resp['docs'], total_retrieved=resp['total_retrieved'],
+        selected_topic=reddit_topic_filter, selected_bot_personality = bot_personality)
+        # resp['query_id'] = 42
         resp['explain'] = {'index_queried': 'Reddit' if core_name.lower() == 'reddit' else 'Chitchat', 
-        'classifier_prob': resp['class_pred'], 'rare_terms_boosted': self.rt, 'entities_boosted': self.entities,
+        'classifier_prob': resp['class_pred'], 'rare_terms_boosted': self.rt, 'entities_boosted': self.ents,
         'context_terms_boosted': self.context, 'top_docs_retrieved': resp['docs']}
 
         return {'query_id': resp['query_id'], 'answer': resp['answer'], 'explain': resp['explain']}
@@ -222,7 +229,7 @@ def main():
         
         # if len(inp_text) == 1 and inp_text in qa.keys():
         #     resp['answer']=np.random.choice(qa[inp_text])
-        #ipdb.set_trace()
+        # ipdb.set_trace()
         resp = bot.process_query("", inp_text)
         # print(results)
         # print(resp['class_pred'])

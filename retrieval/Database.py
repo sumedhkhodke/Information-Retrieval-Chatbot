@@ -1,5 +1,6 @@
 import mysql.connector
-
+from configs import DB_HOST
+import json
 
 class Database:
     # mydb = mysql.connector.connect(host="localhost",user="pradhaneva94",password='')
@@ -7,12 +8,9 @@ class Database:
     # mycursor.execute("CREATE DATABASE IRProject4Database")
     # mycursor.execute("CREATE TABLE IRProject4Table (id INT AUTO_INCREMENT PRIMARY KEY, session_id VARCHAR(255), question VARCHAR(255), answer VARCHAR(255), classifier VARCHAR(255), classifier_probability VARCHAR(255), top_ten_retrieved VARCHAR(255), user_feedback VARCHAR(255), total_retrieved VARCHAR(255), DESM_score VARCHAR(255), selected_topic VARCHAR(255), selected_bot_personality VARCHAR(255))")
 
-    
-
     def __init__(self):
         # self.mydb = mysql.connector.connect(host="34.125.74.143",user="pradhaneva94",password='', database="IRProject4Database")
-        # self.mydb = mysql.connector.connect(host="10.84.174.128",user="pradhaneva94",password='', database="IRProject4Database")
-        self.mydb = mysql.connector.connect(host="localhost",user="root",password='p4', database="IRProject4Database")
+        self.mydb = mysql.connector.connect(host=DB_HOST, user="backend", password='p4', database="IRProject4Database")
         print("self.mydb: ", self.mydb)
         
         self.mycursor = self.mydb.cursor()
@@ -56,7 +54,7 @@ class Database:
         
     def update_feedback_by_id(self, feedback, id):
     
-        sql = "UPDATE " + self.table_name + " SET user_feedback = "+ feedback +" WHERE id = " + id
+        sql = f"UPDATE {self.table_name} SET user_feedback = {feedback} WHERE id = {id}"
         # val = column_value
         self.mycursor.execute(sql)
 
@@ -116,7 +114,10 @@ class Database:
             
         return x
     
-    def insert_row(self, session_id, question, answer, classifier, classifier_probability, top_ten_retrieved, user_feedback, total_retrieved, DESM_score, selected_topic, selected_bot_personality, meta = "None"):
+    def insert_row(self, session_id, question, answer, classifier, classifier_probability, top_ten_retrieved=None, user_feedback=None, total_retrieved=None, DESM_score=None, selected_topic=None, selected_bot_personality=None, meta=None):
+        
+        if top_ten_retrieved is not None and not isinstance(top_ten_retrieved, str):
+            top_ten_retrieved = json.dumps(top_ten_retrieved)
 
         sql = "INSERT INTO " + self.table_name + " (session_id, question, answer, classifier, classifier_probability, top_ten_retrieved, user_feedback, total_retrieved,  DESM_score, selected_topic, selected_bot_personality, meta) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
         val = [session_id, question, answer, classifier, classifier_probability, top_ten_retrieved, user_feedback, total_retrieved,  DESM_score, selected_topic, selected_bot_personality, meta]

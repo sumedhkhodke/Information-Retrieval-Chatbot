@@ -134,9 +134,13 @@ def rare_terms(q_text):
             pass
     rt=dict(sorted(rt.items(), key=lambda item: item[1]))
     rt=list(rt.keys())[-2:]
-    for x in rt:
-        boost_terms.append([a for a,b in tv.most_similar(x, topn=3)])
-    boost_terms=functools.reduce(lambda a,b: a+b, boost_terms)
+    try:
+        for x in rt:
+            boost_terms.append([a for a,b in tv.most_similar(x, topn=3)])
+        boost_terms=functools.reduce(lambda a,b: a+b, boost_terms)
+    except:
+        print('----Failed to get terms to boost')
+        pass
     return boost_terms
 
 def classifyQuery(q):
