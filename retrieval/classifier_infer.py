@@ -164,5 +164,5 @@ def classifyQuery(q):
         # print(class_pred)
         return class_pred
 
-    return "UNKNOWN"
+    return 0
     

@@ -62,17 +62,22 @@ class Chatbot():
         self.ents=[]
     
     def parse_response(self, resp):
+        json_resp = resp.json()
+
         results = []
         num_docs_found = 0
+        max_score = 0 if 'response' not in json_resp else json_resp['response']['maxScore']
+
         try:
-            num_docs_found = resp.json()['response']['numFound']
-            for x in resp.json()['response']['docs']:
+            num_docs_found = json_resp['response']['numFound']
+            for x in json_resp['response']['docs']:
                 results.append(x)
         except Exception as e:
-            print(e)
+            print('Exception occured while parsing response: ', e)
             pass
         
-        return {'total_retrieved': num_docs_found, 'docs':results, 'maxScore':resp.json()['response']['maxScore']}
+
+        return {'total_retrieved': num_docs_found, 'docs':results, 'maxScore':max_score}
     
     def update_context(self,q_text):
         bt=[]
@@ -165,7 +170,7 @@ class Chatbot():
         bot_personality=bot_personality.lower()
         cc_class_thresh = 0.5
         class_pred = classifyQuery(query_text)
-        if class_pred == 'UNKNOWN' or class_pred <= cc_class_thresh:
+        if class_pred <= cc_class_thresh:
             core_name = 'Reddit'
         else:
             core_name = 'CC'
@@ -179,9 +184,9 @@ class Chatbot():
             # return only top k documents...
             resp['docs'] = resp['docs'][:self.topk]
             
-            if core_name == 'Reddit':
+            if core_name == 'Reddit' and resp['docs']:
                 resp['docs'] = self.update_scores(query_text,resp['docs'])
-            
+
             resp['answer'] = self.fetch_answer_from_resp(resp, bot_personality)
             resp['query_id'] = DB.insert_row(session_id=session_id, question=query_text, 
                                              answer=resp['answer'], classifier=int(resp['class_pred'] > cc_class_thresh),
@@ -196,7 +201,7 @@ class Chatbot():
                                    'classifier_prob': resp['class_pred'], 'rare_terms_boosted': [], 'entities_boosted': [],
                                    'context_terms_boosted': [], 'top_docs_retrieved': resp['docs']}
             
-            if core_name == 'Reddit':
+            if core_name == 'Reddit' and resp['docs']:
                 if resp['maxScore'] < 15 and abs(resp['docs'][0]['desm'] )< 0.1:
                     resp['summary'] = "This is the best I could find. " + summarizer(resp['answer'])[0]['summary_text']
                 else:
@@ -206,21 +211,27 @@ class Chatbot():
 
         return {'query_id': resp['query_id'], 'summary': resp['summary'], 'explain': resp['explain']}
 
+def update_feedback(q_id,feedback):
+    DB.update_feedback_by_id(q_id,feedback)
+    return
+
 def main():
     bot=Chatbot()
     while True:
         inp_text = input('enter query:')
         if inp_text.lower().strip() == 'q':
             break
-        
-        # if len(inp_text) == 1 and inp_text in qa.keys():
-        #      resp={'class_pred':1,'docs':[]}
-        #      resp['answer']=np.random.choice(qa[inp_text])
-        #      resp['query_id']=
-        #ipdb.set_trace()
-        resp = bot.process_query(inp_text)
-        # print(results)
-        #print(resp['class_pred'])
+        elif inp_text.lower().strip() == 'reset_context':
+            resp = bot.process_query(session_id='acezx123', query_text='', reset_context=True)
+        else:        
+            # if len(inp_text) == 1 and inp_text in qa.keys():
+            #      resp={'class_pred':1,'docs':[]}
+            #      resp['answer']=np.random.choice(qa[inp_text])
+            #      resp['query_id']=
+            #ipdb.set_trace()
+            resp = bot.process_query(session_id='acezx123', query_text=inp_text)
+            # print(results)
+            #print(resp['class_pred'])
         print((resp['summary']))
 
     return
