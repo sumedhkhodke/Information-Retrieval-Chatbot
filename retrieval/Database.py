@@ -1,5 +1,5 @@
 import mysql.connector
-from configs import DB_HOST
+from configs import DB_HOST, DB_USER
 import json
 
 class Database:
@@ -10,7 +10,7 @@ class Database:
 
     def __init__(self):
         # self.mydb = mysql.connector.connect(host="34.125.74.143",user="pradhaneva94",password='', database="IRProject4Database")
-        self.mydb = mysql.connector.connect(host=DB_HOST, user="backend", password='p4', database="IRProject4Database")
+        self.mydb = mysql.connector.connect(host=DB_HOST, user=DB_USER, password='p4', database="IRProject4Database")
         print("self.mydb: ", self.mydb)
         
         self.mycursor = self.mydb.cursor()
