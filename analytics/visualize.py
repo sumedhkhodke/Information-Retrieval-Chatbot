@@ -9,7 +9,7 @@ seaborn.set()
 import sys
 sys.path.append("../retrieval/")
 from Database import Database
-
+temp_var='test---------'
 db = Database()
 
 def run_query(db, sql_query):
@@ -33,9 +33,9 @@ def show_relevance_by_topic():
     plt.xlabel('Topics', labelpad=12, size=15, fontname='Arial Unicode MS')
     plt.ylabel('% Relevance from user feedback', labelpad=12, size=15, fontname='Arial Unicode MS')
     fig.subplots_adjust(bottom=0.5)
-    fig.show()
+    # fig.show()
 
-    return
+    return fig
 
 def show_relevance_by_database():
     # sql_query = "SELECT classifier, AVG(user_feedback) FROM IRProject4Database WHERE user_feedback IS NOT NULL GROUP BY classifier"
@@ -52,9 +52,9 @@ def show_relevance_by_database():
     plt.xlabel('Database', labelpad=10, size=15, fontname='Arial Unicode MS')
     plt.ylabel('% Relevance from user feedback', labelpad=12, size=15, fontname='Arial Unicode MS')
     fig.subplots_adjust(bottom=0)
-    fig.show()
+    # fig.show()
 
-    return
+    return fig
 
 def show_relevance_by_user():
     # "SELECT classifier, AVG(user_feedback) FROM IRProject4Table WHERE user_feedback IS NOT NULL AND classifier IS NOT NULL GROUP BY classifier"
@@ -94,9 +94,9 @@ def show_relevance_by_user():
 
     ax.legend(['rel > 0.75', '0.5 > rel > 0.75', '0.3 > rel > 0.5', '0.0 > rel > 0.3'], loc='center left', bbox_to_anchor=[-0.8, 0.95])
     plt.title('User Relevance Assessment', pad=15, fontsize=18, fontweight='bold', fontname='Arial Unicode MS')
-    fig.show()
+    # fig.show()
     
-    return
+    return fig
 
 
 def show_wordcloud_by_topic():
@@ -132,9 +132,9 @@ def show_wordcloud_by_topic():
     img5 = mpimg.imread(relative_path + rel_path_word_clouds + 'word_cloud_tech_2.png')
     plt.axis('off')
     imgplot5 = plt.imshow(img5)
-    plt.show()
+    # plt.show()
 
-    return
+    return plt
 
 # df = pd.DataFrame([['Technology', 0.75],
 # ['Healthcare', 0.65],

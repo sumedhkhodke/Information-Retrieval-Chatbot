@@ -12,3 +12,10 @@ DB_HOST = HOST_Jay
 CORE_REDDIT = 'Reddit'
 CORE_CC = 'Chitchat'
 RETR_PATH = "../retrieval/"
+DB_name = 'IRProject4Database'
+# DB_user = 'root'
+# DB_pw = 'p4'
+
+DB_name = 'IRProject4Database'
+DB_user = 'backend'
+DB_pw = 'p4'
