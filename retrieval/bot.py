@@ -165,6 +165,17 @@ class Chatbot():
         return resp['docs'][0][self.personality]
     
     def process_query(self,session_id, query_text, reddit_topic_filter=None, bot_personality='enthusiastic',reset_context=False):
+        """
+            reddit_topic_filter: str from Politics, Healthcare, Education, Environment, Technology
+            bot_personality: str from witty, enthusiastic, professional, friendly, caring
+            reset_context: empty context (typically in a new session)
+            returns: dict
+                    {
+                        'summary' -> chatbot response selected from docs, and summarized
+                        'explain' -> {'index_queried':, 'classifier_prob': , 'rare_terms_boosted': , 'entities_boosted': , 'context_terms_boosted': 'top_docs_retrieved': }
+                        'query_id' -> populated from db after saving.
+                    }
+        """        
         if reset_context:
             self.context=[]
         bot_personality=bot_personality.lower()
