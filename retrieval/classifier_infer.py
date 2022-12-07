@@ -111,20 +111,25 @@ def continuity(q1,q2):
     return abs(float(score[0][0])) >= 0.5
 
 def DESM(q, d):
+    score=0
     qt=word_tokenize(q)
     dt=word_tokenize(d)
     qt=[x for x in qt if x not in stopwords and x not in punctuation]
     dt=[x for x in dt if x not in stopwords and x not in punctuation]
-    qt=functools.reduce(lambda a,b: a+' '+b,qt)
-    dt=functools.reduce(lambda a,b: a+' '+b,dt)
-    qv=st.encode(qt)
-    dv=st.encode(dt)
-    score=util.cos_sim(qv,dv)     
-    return float(score[0][0])
+    try:
+        qt=functools.reduce(lambda a,b: a+' '+b,qt)
+        dt=functools.reduce(lambda a,b: a+' '+b,dt)
+        qv=st.encode(qt)
+        dv=st.encode(dt)
+        score=util.cos_sim(qv,dv)
+        return float(score[0][0])
+    except:
+        return score
 
 def rare_terms(q_text):
     boost_terms=[]
     rt={}
+    q_text=q_text.lower()
     toks=word_tokenize(q_text)
     toks = [x for x in toks if x not in stopwords and x not in punctuation]
     for x in toks:
