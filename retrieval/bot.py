@@ -20,7 +20,6 @@ from configs import HOST, PORT
 import numpy as np
 import functools
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
-from Database import Database
 from classifier_infer import classifyQuery, rare_terms, DESM, entities, continuity
 
 ENTS=['EVENT','FAC','LANGUAGE','GPE','LANGUAGE','LAW','LOC', 'NORP', 'ORG', 'PERSON', 'PRODUCT', 'WORK_OF_ART']
@@ -50,7 +49,6 @@ tokenizer = AutoTokenizer.from_pretrained("philschmid/bart-large-cnn-samsum")
 
 summarizer = pipeline("summarization", model="philschmid/bart-large-cnn-samsum")
 
-DB = Database()
 class Chatbot():
     def __init__(self,context=[],personality='enthusiatic'):
         self.personality=personality
@@ -170,7 +168,7 @@ class Chatbot():
             return resp['docs'][-1]['body']
         return resp['docs'][0][self.personality]
     
-    def process_query(self,session_id, query_text, reddit_topic_filter=None, bot_personality='enthusiastic',reset_context=False):
+    def process_query(self, DB, session_id, query_text, reddit_topic_filter=None, bot_personality='enthusiastic',reset_context=False):
 
         # session_id='acezx124_jay', query_text=inp_text
         """
@@ -237,7 +235,7 @@ class Chatbot():
 
         return {'query_id': resp['query_id'], 'summary': resp['summary'], 'explain': resp['explain']}
 
-def update_feedback(q_id,feedback):
+def update_feedback(DB, q_id,feedback):
     DB.update_feedback_by_id(q_id,feedback)
     return
 

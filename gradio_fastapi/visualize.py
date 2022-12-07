@@ -10,16 +10,14 @@ seaborn.set()
 
 import sys
 sys.path.append("../retrieval/")
-from Database import Database
 temp_var='test---------'
-db = Database()
 
 def run_query(db, sql_query):
     db.mycursor.execute(sql_query)
     records = db.mycursor.fetchall()
     return records
 
-def show_relevance_by_topic():
+def show_relevance_by_topic(db):
     sql_query = "SELECT selected_topic, AVG(user_feedback) FROM IRProject4Table WHERE user_feedback IS NOT NULL AND selected_topic IS NOT NULL GROUP BY selected_topic"
     # sql_query = "SELECT selected_topic, user_feedback FROM IRProject4Table WHERE user_feedback IS NOT NULL AND selected_topic IS NOT NULL"
     records = run_query(db, sql_query)
@@ -41,7 +39,7 @@ def show_relevance_by_topic():
         plt.title('Retrieval Relevance per Topic (Insufficient data)', pad=15, fontsize=18, fontweight='bold')
     return fig
 
-def show_relevance_by_database():
+def show_relevance_by_database(db):
     # sql_query = "SELECT classifier, AVG(user_feedback) FROM IRProject4Database WHERE user_feedback IS NOT NULL GROUP BY classifier"
     sql_query = "SELECT classifier, AVG(user_feedback) FROM IRProject4Table WHERE user_feedback IS NOT NULL AND classifier IS NOT NULL GROUP BY classifier"
     records = run_query(db, sql_query)
@@ -62,7 +60,7 @@ def show_relevance_by_database():
         plt.title('Retrieval Relevance per Database (Insufficient data)', pad=15, fontsize=18, fontweight='bold')
     return fig
 
-def show_relevance_by_user():
+def show_relevance_by_user(db):
     # "SELECT classifier, AVG(user_feedback) FROM IRProject4Table WHERE user_feedback IS NOT NULL AND classifier IS NOT NULL GROUP BY classifier"
     sql_query = "SELECT session_id, AVG(user_feedback) FROM IRProject4Table WHERE user_feedback IS NOT NULL and session_id IS NOT NULL GROUP BY session_id"
     records = run_query(db, sql_query)

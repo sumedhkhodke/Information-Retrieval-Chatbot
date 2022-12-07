@@ -6,15 +6,19 @@ import gradio as gr
 import os, sys
 import uuid
 import sys
+from functools import partial
 # caution: path[0] is reserved for script path (or '' in REPL)
 sys.path.append(os.getcwd()+'/../retrieval/')
 sys.path.append(os.getcwd()+'/../analytics/')
 import visualize as vu 
 import bot
+from Database import Database
 
+DB = Database()
 try:
     app = FastAPI()
     classObj = bot.Chatbot()
+    
 
     @app.get("/")
     def read_main():
@@ -40,7 +44,7 @@ try:
         dic['chat_history']=state
         if state is []: context_flag=1
         else: context_flag=0
-        response = classObj.process_query(session_id,message,faceted_key,personality,context_flag)
+        response = classObj.process_query(DB, session_id,message,faceted_key,personality,context_flag)
         bot_response=response['summary']
         response_id=response['query_id']
         explain=response['explain']
@@ -73,7 +77,7 @@ try:
     def feedback(feedback,q_id):
         feedback_dict={'Satisfactory':1,'Not satisfactory':0}
         feedback=feedback_dict[feedback]
-        bot.update_feedback(q_id,feedback)
+        bot.update_feedback(DB, q_id,feedback)
         return None
 
     def reset_personality_dropdown():
@@ -110,12 +114,15 @@ try:
 
         with gr.Tab("Visualization"):
             gr.Markdown("Understanding the IR model")
-            # plot1 = gr.Plot(vu.show_relevance_by_topic)
+            srbt = partial(vu.show_relevance_by_topic, DB)
+            srbd = partial(vu.show_relevance_by_database, DB)
+            srbu = partial(vu.show_relevance_by_user, DB)
+            # plot1 = gr.Plot(srbt)
             # relative_path = "./"
             # rel_path_word_clouds = "word_clouds_2/"
             # plot2 = gr.Image(relative_path + rel_path_word_clouds + 'word_cloud_edu_2.png')
-            # plot2 = gr.Plot(vu.show_relevance_by_database)
-            # plot3 = gr.Plot(vu.show_relevance_by_user)
+            # plot2 = gr.Plot(srbd)
+            # plot3 = gr.Plot(srbu)
             # plot4 = gr.Plot(vu.show_wordcloud_by_Education)
             # plot5 = gr.Plot(vu.show_wordcloud_by_Healthcare)
             # plot6 = gr.Plot(vu.show_wordcloud_by_Environment)
