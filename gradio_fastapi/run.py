@@ -110,10 +110,10 @@ try:
 
         with gr.Tab("Visualization"):
             gr.Markdown("Look at me...")
-            plot1 = gr.Plot(vu.show_relevance_by_topic)
-            plot2 = gr.Plot(vu.show_relevance_by_database)
-            plot3 = gr.Plot(vu.show_relevance_by_user)
-            plot4 = gr.Plot(vu.show_wordcloud_by_topic)
+            # plot1 = gr.Plot(vu.show_relevance_by_topic)
+            # plot2 = gr.Plot(vu.show_relevance_by_database)
+            # plot3 = gr.Plot(vu.show_relevance_by_user)
+            # plot4 = gr.Plot(vu.show_wordcloud_by_topic)
         q_id_placeholder_component = gr.Textbox(visible=False)
         session_id =  gr.Textbox(visible=False,value=None)
         # submit_button.click(chat, inputs=[session_id,message, state, personality, faceted_key], outputs=[chatbot, state,explainability,q_id_placeholder_component,session_id])
