@@ -111,7 +111,7 @@ try:
                     feedback_button_12 = gr.Button("Send feedback",visible=False)
         with gr.Tab("Analytics"):
             gr.Markdown("Analytics of the retrieved response")
-            explainability = gr.Textbox(lines=15)
+            explainability = gr.Textbox(label="Detailed analytics for the chatbot's last response",lines=15)
 
         with gr.Tab("Visualizations"):
             gr.Markdown("Understanding the IR model")
