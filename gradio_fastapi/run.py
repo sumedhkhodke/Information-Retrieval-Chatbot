@@ -7,10 +7,9 @@ import os, sys
 import uuid
 import sys
 # caution: path[0] is reserved for script path (or '' in REPL)
-sys.path.insert(1, '../retrieval/')
-sys.path.insert(2, '../analytics/')
-import visualize
-# from .analytics import visualize
+sys.path.append(os.getcwd()+'/../retrieval/')
+sys.path.append(os.getcwd()+'/../analytics/')
+import visualize as vu 
 import bot
 
 try:
@@ -72,6 +71,8 @@ try:
         return state, state
 
     def feedback(feedback,q_id):
+        feedback_dict={'Satisfactory':1,'Not Satisfactory':0}
+        feedback=feedback_dict[feedback]
         bot.update_feedback(q_id,feedback)
         return None
 
@@ -109,12 +110,13 @@ try:
 
         with gr.Tab("Visualization"):
             gr.Markdown("Look at me...")
-            # print(visualize.temp_var)
-            # a = visualize.show_relevance_by_topic()
-            gr.Textbox()
+            plot1 = gr.Plot(vu.show_relevance_by_topic)
+            plot2 = gr.Plot(vu.show_relevance_by_database)
+            plot3 = gr.Plot(vu.show_relevance_by_user)
+            plot4 = gr.Plot(vu.show_wordcloud_by_topic)
         q_id_placeholder_component = gr.Textbox(visible=False)
         session_id =  gr.Textbox(visible=False,value=None)
-        submit_button.click(chat, inputs=[session_id,message, state, personality, faceted_key], outputs=[chatbot, state,explainability,q_id_placeholder_component,session_id])
+        # submit_button.click(chat, inputs=[session_id,message, state, personality, faceted_key], outputs=[chatbot, state,explainability,q_id_placeholder_component,session_id])
         clear_button.click(clear, inputs=[message, state, personality, faceted_key], outputs=[chatbot, state])
         feedback_button.click(feedback, inputs=[feedback_radio, q_id_placeholder_component])
     # demo.launch()

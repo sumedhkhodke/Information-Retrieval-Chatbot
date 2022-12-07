@@ -2,6 +2,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
+plt.rcdefaults()
+plt.switch_backend('agg')
 
 import seaborn
 seaborn.set()
@@ -23,7 +25,6 @@ def show_relevance_by_topic():
     records = run_query(db, sql_query)
     print(records)
     df = pd.DataFrame(records, columns=['topic', 'user_feedback'])
-
     # plt.bar(df['topic'], df['user_feedback'])
     fig = plt.figure(figsize=(5, 7))
     df.plot(kind='bar', legend=False, width=0.5, x='topic')
@@ -34,7 +35,6 @@ def show_relevance_by_topic():
     plt.ylabel('% Relevance from user feedback', labelpad=12, size=15, fontname='Arial Unicode MS')
     fig.subplots_adjust(bottom=0.5)
     # fig.show()
-
     return fig
 
 def show_relevance_by_database():
@@ -43,7 +43,6 @@ def show_relevance_by_database():
     records = run_query(db, sql_query)
     df = pd.DataFrame(records, columns=['Retrieval Index', 'user_feedback'])
     df.loc[:, 'Retrieval Index'] = df['Retrieval Index'].map({'1': 'Chitchat', '0': 'Reddit'})
-
     fig = plt.figure(figsize=(5, 7))
     df.plot(kind='bar', legend=False, width=0.3, x='Retrieval Index')
     plt.xticks(rotation=0, fontname='Arial Unicode MS')
@@ -53,7 +52,6 @@ def show_relevance_by_database():
     plt.ylabel('% Relevance from user feedback', labelpad=12, size=15, fontname='Arial Unicode MS')
     fig.subplots_adjust(bottom=0)
     # fig.show()
-
     return fig
 
 def show_relevance_by_user():
