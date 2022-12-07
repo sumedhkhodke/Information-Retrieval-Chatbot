@@ -130,17 +130,23 @@ class Chatbot():
                 # what are the valid topics we have in the data??
                 # Politics, Environment, Education, Techonology, Healthcare
                 reddit_topic_filter = reddit_topic_filter.strip().title()
-                req_url = solr_url+"fl=id,parent_body,body,score&indent=true&q.op=OR&q=("+q_text+")&qf=parent_body&fq=topic:"+reddit_topic_filter+"&bq=parent_body:("+rt+")*3&rq={!rerank reRankQuery=$rqq reRankDocs="+str(self.topk)+" reRankWeight=5}&rqq={!func}sum("
+                if rt:
+                    req_url = solr_url+"fl=id,parent_body,body,score&indent=true&q.op=OR&q=("+q_text+")&qf=parent_body&fq=topic:"+reddit_topic_filter+"&bq=parent_body:("+rt+")*3&rq={!rerank reRankQuery=$rqq reRankDocs="+str(self.topk)+" reRankWeight=5}&rqq={!func}sum("
+                else:
+                    req_url = solr_url+"fl=id,parent_body,body,score&indent=true&q.op=OR&q=("+q_text+")&qf=parent_body&fq=topic:"+reddit_topic_filter+"&rq={!rerank reRankQuery=$rqq reRankDocs="+str(self.topk)+" reRankWeight=5}&rqq={!func}sum("
+
                 for x in bt:
-                    req_url+="query({!edismax qf=body v='"+x+"'}),"
-                #req_url[-1]=""
-                req_url+="query({!edismax qf=body v='"+rt+"'}))&rows="+str(self.topk)
+                    req_url+="query({!edismax qf=body v='"+x+"'},0),"
+                req_url+="query({!edismax qf=body v='"+rt+"'},0))&rows="+str(self.topk)
             else:
-                req_url = solr_url+"fl=id,parent_body,body,score&indent=true&q.op=OR&q=("+q_text+")&qf=parent_body&bq=parent_body:("+rt+")*3&rq={!rerank reRankQuery=$rqq reRankDocs="+str(self.topk)+" reRankWeight=5}&rqq={!func}sum("
+                if rt:
+                    req_url = solr_url+"fl=id,parent_body,body,score&indent=true&q.op=OR&q=("+q_text+")&qf=parent_body&bq=parent_body:("+rt+")*3&rq={!rerank reRankQuery=$rqq reRankDocs="+str(self.topk)+" reRankWeight=5}&rqq={!func}sum("
+                else:
+                    req_url = solr_url+"fl=id,parent_body,body,score&indent=true&q.op=OR&q=("+q_text+")&qf=parent_body&rq={!rerank reRankQuery=$rqq reRankDocs="+str(self.topk)+" reRankWeight=5}&rqq={!func}sum("
+
                 for x in bt:
-                    req_url+="query({!edismax qf=body v='"+x+"'}),"
-                #req_url[-1]=""
-                req_url+="query({!edismax qf=body v='"+rt+"'}))&rows="+str(self.topk)
+                    req_url+="query({!edismax qf=body v='"+x+"'},0),"
+                req_url+="query({!edismax qf=body v='"+rt+"'},0))&rows="+str(self.topk)
         return req_url
     
     def search_index(self,core_name, q_text, reddit_topic_filter, bot_personality):
@@ -214,9 +220,9 @@ class Chatbot():
             
             if core_name == 'Reddit' and resp['docs']:
                 if resp['maxScore'] < 15 and abs(resp['docs'][0]['desm'] )< 0.1:
-                    resp['summary'] = "This is the best I could find. " + summarizer(resp['answer'])[0]['summary_text']
+                    resp['summary'] = "This is the best I could find. " + summarizer(resp['answer'][:1024])[0]['summary_text']
                 else:
-                    resp['summary'] = summarizer(resp['answer'])[0]['summary_text']
+                    resp['summary'] = summarizer(resp['answer'][:1024])[0]['summary_text']
             else:
                 resp['summary'] = resp['answer']
 
