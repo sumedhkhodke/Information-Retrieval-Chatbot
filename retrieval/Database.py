@@ -2,6 +2,7 @@ import mysql.connector
 from configs import DB_HOST,DB_user,DB_pw,DB_name
 import json
 
+
 class Database:
     # mydb = mysql.connector.connect(host="localhost",user="pradhaneva94",password='')
     # mycursor = mydb.cursor()
@@ -11,10 +12,12 @@ class Database:
     def __init__(self):
         # self.mydb = mysql.connector.connect(host="34.125.74.143",user="pradhaneva94",password='', database="IRProject4Database")
         self.mydb = mysql.connector.connect(host=DB_HOST, user=DB_user, password=DB_pw, database=DB_name)
+
         print("self.mydb: ", self.mydb)
         
         self.mycursor = self.mydb.cursor()
-        
+
+        self.mycursor.execute('set global max_allowed_packet=67108864')
         
         
         # self.mydb = mysql.connector.connect(host="localhost",user="pradhaneva94",password='', database="IRProject4Database")

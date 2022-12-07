@@ -105,15 +105,22 @@ try:
                     feedback_button = gr.Button("Send feedback")
                     feedback_button_12 = gr.Button("Send feedback",visible=False)
         with gr.Tab("Analytics"):
-            gr.Markdown("Look at me...")
+            gr.Markdown("Analytics of the retrieved response")
             explainability = gr.Textbox(lines=15)
 
         with gr.Tab("Visualization"):
-            gr.Markdown("Look at me...")
+            gr.Markdown("Understanding the IR model")
             # plot1 = gr.Plot(vu.show_relevance_by_topic)
+            # relative_path = "./"
+            # rel_path_word_clouds = "word_clouds_2/"
+            # plot2 = gr.Image(relative_path + rel_path_word_clouds + 'word_cloud_edu_2.png')
             # plot2 = gr.Plot(vu.show_relevance_by_database)
             # plot3 = gr.Plot(vu.show_relevance_by_user)
-            # plot4 = gr.Plot(vu.show_wordcloud_by_topic)
+            # plot4 = gr.Plot(vu.show_wordcloud_by_Education)
+            # plot5 = gr.Plot(vu.show_wordcloud_by_Healthcare)
+            # plot6 = gr.Plot(vu.show_wordcloud_by_Environment)
+            # plot7 = gr.Plot(vu.show_wordcloud_by_Politics)
+            # plot8 = gr.Plot(vu.show_wordcloud_by_Technology)
         q_id_placeholder_component = gr.Textbox(visible=False)
         session_id =  gr.Textbox(visible=False,value=None)
         submit_button.click(chat, inputs=[session_id,message, state, personality, faceted_key], outputs=[chatbot, state,explainability,q_id_placeholder_component,session_id])

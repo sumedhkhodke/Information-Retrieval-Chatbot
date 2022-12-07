@@ -2,20 +2,39 @@ import gradio as gr
 import matplotlib.pyplot as plt; plt.rcdefaults()
 import numpy as np
 import matplotlib.pyplot as plt
-plt.switch_backend('agg')
+# plt.switch_backend('agg')
+import pandas as pd
 
-from .. import retrieval.configs
+import seaborn
+seaborn.set()
+
+import sys
+sys.path.append("../retrieval/")
+from Database import Database
+db = Database()
+
+def run_query(db, sql_query):
+    db.mycursor.execute(sql_query)
+    records = db.mycursor.fetchall()
+    return records
 
 def show_relevance_by_topic():
-    objects = ('Python', 'C++', 'Java', 'Perl', 'Scala', 'Lisp')
-    y_pos = np.arange(len(objects))
-    performance = [10,8,6,4,2,1]
-
-    plt.barh(y_pos, performance, align='center', alpha=0.5)
-    plt.yticks(y_pos, objects)
-    plt.xlabel('Usage')
-    plt.title('Programming language usage')
-    return plt
+    sql_query = "SELECT selected_topic, AVG(user_feedback) FROM IRProject4Table WHERE user_feedback IS NOT NULL AND selected_topic IS NOT NULL GROUP BY selected_topic"
+    # sql_query = "SELECT selected_topic, user_feedback FROM IRProject4Table WHERE user_feedback IS NOT NULL AND selected_topic IS NOT NULL"
+    records = run_query(db, sql_query)
+    print(records)
+    df = pd.DataFrame(records, columns=['topic', 'user_feedback'])
+    # plt.bar(df['topic'], df['user_feedback'])
+    fig = plt.figure(figsize=(5, 7))
+    df.plot(kind='bar', legend=False, width=0.5, x='topic')
+    plt.xticks(rotation=0, fontname='Arial Unicode MS')
+    # plt.bar_label()
+    plt.title('Retrieval Relevance per Topic', pad=15, fontsize=18, fontweight='bold', fontname='Arial Unicode MS')
+    plt.xlabel('Topics', labelpad=12, size=15, fontname='Arial Unicode MS')
+    plt.ylabel('% Relevance from user feedback', labelpad=12, size=15, fontname='Arial Unicode MS')
+    fig.subplots_adjust(bottom=0.5)
+    fig.show()
+    return fig
 
 with gr.Blocks() as demo:
     with gr.Row():
@@ -33,8 +52,6 @@ with gr.Blocks() as demo:
             # img1 = gr.Image(show_relevance_by_topic)
             btn = gr.Button("Go").style(full_width=True)
             map = gr.Plot(show_relevance_by_topic)
-
-
 
 
 demo.launch()
