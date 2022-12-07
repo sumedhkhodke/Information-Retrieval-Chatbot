@@ -116,7 +116,7 @@ try:
             # plot4 = gr.Plot(vu.show_wordcloud_by_topic)
         q_id_placeholder_component = gr.Textbox(visible=False)
         session_id =  gr.Textbox(visible=False,value=None)
-        # submit_button.click(chat, inputs=[session_id,message, state, personality, faceted_key], outputs=[chatbot, state,explainability,q_id_placeholder_component,session_id])
+        submit_button.click(chat, inputs=[session_id,message, state, personality, faceted_key], outputs=[chatbot, state,explainability,q_id_placeholder_component,session_id])
         clear_button.click(clear, inputs=[message, state, personality, faceted_key], outputs=[chatbot, state])
         feedback_button.click(feedback, inputs=[feedback_radio, q_id_placeholder_component])
     # demo.launch()
