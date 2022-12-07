@@ -129,6 +129,7 @@ def DESM(q, d):
 def rare_terms(q_text):
     boost_terms=[]
     rt={}
+    q_text=q_text.lower()
     toks=word_tokenize(q_text)
     toks = [x for x in toks if x not in stopwords and x not in punctuation]
     for x in toks:
