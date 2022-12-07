@@ -71,7 +71,7 @@ try:
         return state, state
 
     def feedback(feedback,q_id):
-        feedback_dict={'Satisfactory':1,'Not Satisfactory':0}
+        feedback_dict={'Satisfactory':1,'Not satisfactory':0}
         feedback=feedback_dict[feedback]
         bot.update_feedback(q_id,feedback)
         return None
