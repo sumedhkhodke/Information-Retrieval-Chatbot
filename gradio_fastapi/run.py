@@ -7,7 +7,9 @@ import os, sys
 import uuid
 import sys
 # caution: path[0] is reserved for script path (or '' in REPL)
-sys.path.insert(1, '../retrieval/')
+sys.path.append(os.getcwd()+'/../retrieval/')
+sys.path.append(os.getcwd()+'/../analytics/')
+import visualize as vu 
 import bot
 
 try:
@@ -23,33 +25,45 @@ try:
         def click(self, *args, **kwargs):
             super().click(*args, **{**kwargs, **dict(inputs=None, outputs=None)})
 
-    def do1(inp):
-        response=inp['query_text'] +' aaaaa'
-        return response
+    def get_session(state):
+        return str(uuid.uuid4())
 
-    def get_session(state, session_id):
-        return uuid.uuid4() if state is None else session_id
-
-    def chat(message, state, personality, faceted_key):
-        state = state or []
-        session_id='239843d9-741e-11ed-8648-e02be9d57d03' 
-        session_id = get_session(state,session_id)
+    def chat(session_id, message, state, personality, faceted_key):
+        state=state or []
+        if state==[]: 
+            session_id = get_session(state)
         dic={}
         dic['query_text']=message
         dic['personality']=personality
         dic['faceted_key']=faceted_key
         dic['session_key']=session_id
         dic['chat_history']=state
-        if state is []: context_flag=True
-        else: context_flag=False
+        if state is []: context_flag=1
+        else: context_flag=0
         response = classObj.process_query(session_id,message,faceted_key,personality,context_flag)
-        # response = do1(dic)
-        
-        bot_response=response['answer']
+        bot_response=response['summary']
         response_id=response['query_id']
         explain=response['explain']
+        index_queried = explain['index_queried']
+        classifier_prob = np.round(explain['classifier_prob'])
+        rare_terms_boosted = explain['rare_terms_boosted']
+        entities_boosted = explain['entities_boosted']
+        context_terms_boosted = explain['context_terms_boosted']
+        top_terms = explain['top_docs_retrieved']
+        top_terms_text=""
+        if top_terms:
+            leng= len(top_terms)
+            for i in top_terms:
+                top_terms_text = top_terms_text+'[ '
+                for k,j in i.items():
+                    top_terms_text = top_terms_text+f'{k} : {j}\t'
+                top_terms_text = top_terms_text+' ]'
+                if i!=top_terms[-1]:
+                    top_terms_text = top_terms_text+','
+                    top_terms_text = top_terms_text+f'\n'
         state.append((message, bot_response))
-        return state, state, response_id#,explain
+        explain_text=f'Query : {message} \n Response : {bot_response} \n Index searched : {index_queried} \n Classifier probability for searched index : {classifier_prob} \n Rare terms boosted : {rare_terms_boosted} \n Entities boosted : {entities_boosted} \n Context terms boosted : {context_terms_boosted} \n Top retrieved docs : {top_terms_text}'
+        return state, state,explain_text,response_id,session_id
 
     def clear(message, state, personality, faceted_key):
         state = gr.State()
@@ -57,12 +71,9 @@ try:
         return state, state
 
     def feedback(feedback,q_id):
-        dic1={}
-        dic1['feedback']=feedback
-        dic1['q_id']=q_id
-        dic1['session_id']=session_id
-        classObj.update_feedback(q_id,feedback)
-        # ~ = do2(dic1)
+        feedback_dict={'Satisfactory':1,'Not Satisfactory':0}
+        feedback=feedback_dict[feedback]
+        bot.update_feedback(q_id,feedback)
         return None
 
     def reset_personality_dropdown():
@@ -89,21 +100,25 @@ try:
                     submit_button = gr.Button("Submit")
                     clear_button = gr.Button("Clear")
                 with gr.Row():
-                    # feedback_button_11, feedback_radio, feedback_button, feedback_button_12 = gr.Columns(4)
                     feedback_button_11 = gr.Button("Send feedback",visible=False)
                     feedback_radio=gr.Radio(label='Was the last response of the chatbot relevant?',choices=["Satisfactory","Not satisfactory"])
                     feedback_button = gr.Button("Send feedback")
                     feedback_button_12 = gr.Button("Send feedback",visible=False)
         with gr.Tab("Analytics"):
             gr.Markdown("Look at me...")
+            explainability = gr.Textbox(lines=15)
 
         with gr.Tab("Visualization"):
             gr.Markdown("Look at me...")
-        # q_id_placeholder_component = gr.Textbox(visible=False)
-        # explainability = gr.Textbox(visible=False)
-        submit_button.click(chat, inputs=[message, state, personality, faceted_key], outputs=[chatbot, state])#,q_id_placeholder_component,explainability])
+            # plot1 = gr.Plot(vu.show_relevance_by_topic)
+            # plot2 = gr.Plot(vu.show_relevance_by_database)
+            # plot3 = gr.Plot(vu.show_relevance_by_user)
+            # plot4 = gr.Plot(vu.show_wordcloud_by_topic)
+        q_id_placeholder_component = gr.Textbox(visible=False)
+        session_id =  gr.Textbox(visible=False,value=None)
+        submit_button.click(chat, inputs=[session_id,message, state, personality, faceted_key], outputs=[chatbot, state,explainability,q_id_placeholder_component,session_id])
         clear_button.click(clear, inputs=[message, state, personality, faceted_key], outputs=[chatbot, state])
-        feedback_button.click(feedback, inputs=[feedback_radio])#, q_id_placeholder_component])
+        feedback_button.click(feedback, inputs=[feedback_radio, q_id_placeholder_component])
     # demo.launch()
     app = gr.mount_gradio_app(app, demo, path="/TheCodeLinguists")
 

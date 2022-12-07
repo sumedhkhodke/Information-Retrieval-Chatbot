@@ -171,6 +171,8 @@ class Chatbot():
         return resp['docs'][0][self.personality]
     
     def process_query(self,session_id, query_text, reddit_topic_filter=None, bot_personality='enthusiastic',reset_context=False):
+
+        # session_id='acezx124_jay', query_text=inp_text
         """
             reddit_topic_filter: str from Politics, Healthcare, Education, Environment, Technology
             bot_personality: str from witty, enthusiastic, professional, friendly, caring
@@ -181,7 +183,11 @@ class Chatbot():
                         'explain' -> {'index_queried':, 'classifier_prob': , 'rare_terms_boosted': , 'entities_boosted': , 'context_terms_boosted': 'top_docs_retrieved': }
                         'query_id' -> populated from db after saving.
                     }
-        """        
+        """
+        # print(session_id, query_text, reddit_topic_filter, bot_personality, reset_context)
+        reddit_topic_filter = None if reddit_topic_filter.strip().title() not in ('Politics', 'Healthcare', 'Education', 'Environment', 'Technology') else reddit_topic_filter
+        # reddit_topic_filter = None if not reddit_topic_filter.lower() not in ('Politics', 'Healthcare', 'Education', 'Environment', 'Technology')
+
         if reset_context:
             self.context=[]
         bot_personality=bot_personality.lower()
@@ -191,6 +197,7 @@ class Chatbot():
             core_name = 'Reddit'
         else:
             core_name = 'CC'
+        
         
         if len(query_text.split()) == 1 and query_text in qa.keys():
             return {'class_pred':1,'summary':np.random.choice(qa[query_text])}
@@ -203,8 +210,10 @@ class Chatbot():
             
             if core_name == 'Reddit' and resp['docs']:
                 resp['docs'] = self.update_scores(query_text,resp['docs'])
-
+            
+            
             resp['answer'] = self.fetch_answer_from_resp(resp, bot_personality)
+            
             resp['query_id'] = DB.insert_row(session_id=session_id, question=query_text, 
                                              answer=resp['answer'], classifier=int(resp['class_pred'] > cc_class_thresh),
                                              classifier_probability=resp['class_pred'], top_ten_retrieved=resp['docs'], total_retrieved=resp['total_retrieved'],
@@ -239,14 +248,14 @@ def main():
         if inp_text.lower().strip() == 'q':
             break
         elif inp_text.lower().strip() == 'reset_context':
-            resp = bot.process_query(session_id='acezx123', query_text='', reset_context=True)
+            resp = bot.process_query(session_id='acezx124_jay', query_text='', reset_context=True)
         else:        
             # if len(inp_text) == 1 and inp_text in qa.keys():
             #      resp={'class_pred':1,'docs':[]}
             #      resp['answer']=np.random.choice(qa[inp_text])
             #      resp['query_id']=
             #ipdb.set_trace()
-            resp = bot.process_query(session_id='acezx123', query_text=inp_text)
+            resp = bot.process_query(session_id='acezx124_jay', query_text=inp_text)
             # print(results)
             #print(resp['class_pred'])
         print((resp['summary']))
