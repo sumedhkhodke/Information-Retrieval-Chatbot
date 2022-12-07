@@ -75,6 +75,7 @@ try:
         return state, state
 
     def feedback(feedback,q_id):
+        if q_id=='': return "You need to use the chatbot to get a response to provide its feedback."
         feedback_dict={'Satisfactory':1,'Not satisfactory':0}
         feedback=feedback_dict[feedback]
         bot.update_feedback(DB, q_id,feedback)
@@ -112,17 +113,20 @@ try:
             gr.Markdown("Analytics of the retrieved response")
             explainability = gr.Textbox(lines=15)
 
-        with gr.Tab("Visualization"):
+        with gr.Tab("Visualizations"):
             gr.Markdown("Understanding the IR model")
             srbt = partial(vu.show_relevance_by_topic, DB)
             srbd = partial(vu.show_relevance_by_database, DB)
             srbu = partial(vu.show_relevance_by_user, DB)
             # plot1 = gr.Plot(srbt)
-            # relative_path = "./"
-            # rel_path_word_clouds = "word_clouds_2/"
-            # plot2 = gr.Image(relative_path + rel_path_word_clouds + 'word_cloud_edu_2.png')
             # plot2 = gr.Plot(srbd)
             # plot3 = gr.Plot(srbu)
+            rel_path_word_clouds = "./word_clouds_2/"
+            plot4 = gr.Image(label='WordCloud for topic - Education',value=rel_path_word_clouds + 'word_cloud_edu_2.png',shape=(10,10)).style(height=560, width=750)
+            plot4 = gr.Image(label='WordCloud for topic - Healthcare',value=rel_path_word_clouds + 'word_cloud_health_2.png',shape=(10,10)).style(height=560, width=750)
+            plot4 = gr.Image(label='WordCloud for topic - Environment',value=rel_path_word_clouds + 'word_cloud_env_2.png',shape=(10,10)).style(height=560, width=750)
+            plot4 = gr.Image(label='WordCloud for topic - Politics',value=rel_path_word_clouds + 'word_cloud_poli_3.png',shape=(10,10)).style(height=560, width=750)
+            plot4 = gr.Image(label='WordCloud for topic - Technology',value=rel_path_word_clouds + 'word_cloud_tech_2.png',shape=(10,10)).style(height=560, width=750)
             # plot4 = gr.Plot(vu.show_wordcloud_by_Education)
             # plot5 = gr.Plot(vu.show_wordcloud_by_Healthcare)
             # plot6 = gr.Plot(vu.show_wordcloud_by_Environment)

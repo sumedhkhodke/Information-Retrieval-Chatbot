@@ -20,7 +20,7 @@ from configs import HOST, PORT
 import numpy as np
 import functools
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
-from classifier_infer import classifyQuery, rare_terms, DESM, entities, continuity
+# from classifier_infer import classifyQuery, rare_terms, DESM, entities, continuity
 
 ENTS=['EVENT','FAC','LANGUAGE','GPE','LANGUAGE','LAW','LOC', 'NORP', 'ORG', 'PERSON', 'PRODUCT', 'WORK_OF_ART']
 
