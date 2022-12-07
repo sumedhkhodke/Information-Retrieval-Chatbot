@@ -26,24 +26,21 @@ try:
         def click(self, *args, **kwargs):
             super().click(*args, **{**kwargs, **dict(inputs=None, outputs=None)})
 
-    def do1(inp):
-        response=inp['query_text'] +' aaaaa'
-        return response
-
     def get_session(state):
-        return uuid.uuid4() if state is None else None
+        return str(uuid.uuid4())
 
-    def chat(message, state, personality, faceted_key):
-        state = state or []
-        session_id = get_session(state)
+    def chat(session_id, message, state, personality, faceted_key):
+        state=state or []
+        if state==[]: 
+            session_id = get_session(state)
         dic={}
         dic['query_text']=message
         dic['personality']=personality
         dic['faceted_key']=faceted_key
         dic['session_key']=session_id
         dic['chat_history']=state
-        if state is []: context_flag=True
-        else: context_flag=False
+        if state is []: context_flag=1
+        else: context_flag=0
         response = classObj.process_query(session_id,message,faceted_key,personality,context_flag)
         bot_response=response['summary']
         response_id=response['query_id']
@@ -67,7 +64,7 @@ try:
                     top_terms_text = top_terms_text+f'\n'
         state.append((message, bot_response))
         explain_text=f'Query : {message} \n Response : {bot_response} \n Index searched : {index_queried} \n Classifier probability for searched index : {classifier_prob} \n Rare terms boosted : {rare_terms_boosted} \n Entities boosted : {entities_boosted} \n Context terms boosted : {context_terms_boosted} \n Top retrieved docs : {top_terms_text}'
-        return state, state,explain_text,response_id
+        return state, state,explain_text,response_id,session_id
 
     def clear(message, state, personality, faceted_key):
         state = gr.State()
@@ -75,10 +72,6 @@ try:
         return state, state
 
     def feedback(feedback,q_id):
-        dic1={}
-        dic1['feedback']=feedback
-        dic1['q_id']=q_id
-        dic1['session_id']=session_id
         bot.update_feedback(q_id,feedback)
         return None
 
@@ -120,7 +113,8 @@ try:
             # a = visualize.show_relevance_by_topic()
             gr.Textbox()
         q_id_placeholder_component = gr.Textbox(visible=False)
-        submit_button.click(chat, inputs=[message, state, personality, faceted_key], outputs=[chatbot, state,explainability,q_id_placeholder_component])
+        session_id =  gr.Textbox(visible=False,value=None)
+        submit_button.click(chat, inputs=[session_id,message, state, personality, faceted_key], outputs=[chatbot, state,explainability,q_id_placeholder_component,session_id])
         clear_button.click(clear, inputs=[message, state, personality, faceted_key], outputs=[chatbot, state])
         feedback_button.click(feedback, inputs=[feedback_radio, q_id_placeholder_component])
     # demo.launch()
