@@ -47,26 +47,29 @@ try:
         response = classObj.process_query(DB, session_id,message,faceted_key,personality,context_flag)
         bot_response=response['summary']
         response_id=response['query_id']
-        explain=response['explain']
-        index_queried = explain['index_queried']
-        classifier_prob = np.round(explain['classifier_prob'])
-        rare_terms_boosted = explain['rare_terms_boosted']
-        entities_boosted = explain['entities_boosted']
-        context_terms_boosted = explain['context_terms_boosted']
-        top_terms = explain['top_docs_retrieved']
-        top_terms_text=""
-        if top_terms:
-            leng= len(top_terms)
-            for i in top_terms:
-                top_terms_text = top_terms_text+'[ '
-                for k,j in i.items():
-                    top_terms_text = top_terms_text+f'{k} : {j}\t'
-                top_terms_text = top_terms_text+' ]'
-                if i!=top_terms[-1]:
-                    top_terms_text = top_terms_text+','
-                    top_terms_text = top_terms_text+f'\n'
+        if 'explain' in response:
+            explain=response['explain']
+            index_queried = explain['index_queried']
+            classifier_prob = np.round(explain['classifier_prob'])
+            rare_terms_boosted = explain['rare_terms_boosted']
+            entities_boosted = explain['entities_boosted']
+            context_terms_boosted = explain['context_terms_boosted']
+            top_terms = explain['top_docs_retrieved']
+            top_terms_text=""
+            if top_terms:
+                leng= len(top_terms)
+                for i in top_terms:
+                    top_terms_text = top_terms_text+'[ '
+                    for k,j in i.items():
+                        top_terms_text = top_terms_text+f'{k} : {j}\t'
+                    top_terms_text = top_terms_text+' ]'
+                    if i!=top_terms[-1]:
+                        top_terms_text = top_terms_text+','
+                        top_terms_text = top_terms_text+f'\n'
+            explain_text=f'Query : {message} \n Response : {bot_response} \n Index searched : {index_queried} \n Classifier probability for searched index : {classifier_prob} \n Rare terms boosted : {rare_terms_boosted} \n Entities boosted : {entities_boosted} \n Context terms boosted : {context_terms_boosted} \n Top retrieved docs : {top_terms_text}'
+        else: 
+            explain_text ='Generic response'
         state.append((message, bot_response))
-        explain_text=f'Query : {message} \n Response : {bot_response} \n Index searched : {index_queried} \n Classifier probability for searched index : {classifier_prob} \n Rare terms boosted : {rare_terms_boosted} \n Entities boosted : {entities_boosted} \n Context terms boosted : {context_terms_boosted} \n Top retrieved docs : {top_terms_text}'
         return state, state,explain_text,response_id,session_id
 
     def clear(message, state, personality, faceted_key):
