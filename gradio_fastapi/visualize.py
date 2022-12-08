@@ -22,7 +22,7 @@ def show_relevance_by_topic(db):
         df = pd.read_csv("relevance_by_topic.csv", sep="\t")
     except FileNotFoundError:
         df = None
-    if df:
+    if df is not None:
         # plt.bar(df['topic'], df['user_feedback'])
         fig = plt.figure(figsize=(5, 7))
         df.plot(kind='bar', legend=False, width=0.5, x='topic')
@@ -43,7 +43,7 @@ def show_relevance_by_database(db):
         df = pd.read_csv('relevance_by_database.csv', sep="\t")
     except FileNotFoundError:
         df = None
-    if df:
+    if df is not None:
         df.loc[:, 'Retrieval Index'] = df['Retrieval Index'].map({'1': 'Chitchat', '0': 'Reddit'})
         fig = plt.figure(figsize=(5, 7))
         df.plot(kind='bar', legend=False, width=0.3, x='Retrieval Index')
@@ -64,7 +64,7 @@ def show_relevance_by_user(db):
         df = pd.read_csv("relevance_by_user.csv", sep="\t")
     except FileNotFoundError:
         df = None
-    if df:
+    if df is not None:
         df_new = pd.cut(df['user_feedback'], bins=[0, 0.3, 0.5, 0.75, 1],
         labels=['irrelevant', 'somewhat relevant', 'relevant', 'highly relevant'])
         pie_df = (df_new.value_counts()/len(df)).to_frame().reset_index()
