@@ -18,12 +18,11 @@ def run_query(db, sql_query):
     return records
 
 def show_relevance_by_topic(db):
-    sql_query = "SELECT selected_topic, AVG(user_feedback) FROM IRProject4Table WHERE user_feedback IS NOT NULL AND selected_topic IS NOT NULL GROUP BY selected_topic"
-    # sql_query = "SELECT selected_topic, user_feedback FROM IRProject4Table WHERE user_feedback IS NOT NULL AND selected_topic IS NOT NULL"
-    records = run_query(db, sql_query)
-    print(records)
-    if records:
-        df = pd.DataFrame(records, columns=['topic', 'user_feedback'])
+    try:
+        df = pd.read_csv("relevance_by_topic.csv", sep="\t")
+    except FileNotFoundError:
+        df = None
+    if df:
         # plt.bar(df['topic'], df['user_feedback'])
         fig = plt.figure(figsize=(5, 7))
         df.plot(kind='bar', legend=False, width=0.5, x='topic')
@@ -40,11 +39,11 @@ def show_relevance_by_topic(db):
     return fig
 
 def show_relevance_by_database(db):
-    # sql_query = "SELECT classifier, AVG(user_feedback) FROM IRProject4Database WHERE user_feedback IS NOT NULL GROUP BY classifier"
-    sql_query = "SELECT classifier, AVG(user_feedback) FROM IRProject4Table WHERE user_feedback IS NOT NULL AND classifier IS NOT NULL GROUP BY classifier"
-    records = run_query(db, sql_query)
-    if records:
-        df = pd.DataFrame(records, columns=['Retrieval Index', 'user_feedback'])
+    try:
+        df = pd.read_csv('relevance_by_database.csv', sep="\t")
+    except FileNotFoundError:
+        df = None
+    if df:
         df.loc[:, 'Retrieval Index'] = df['Retrieval Index'].map({'1': 'Chitchat', '0': 'Reddit'})
         fig = plt.figure(figsize=(5, 7))
         df.plot(kind='bar', legend=False, width=0.3, x='Retrieval Index')
@@ -61,12 +60,11 @@ def show_relevance_by_database(db):
     return fig
 
 def show_relevance_by_user(db):
-    # "SELECT classifier, AVG(user_feedback) FROM IRProject4Table WHERE user_feedback IS NOT NULL AND classifier IS NOT NULL GROUP BY classifier"
-    sql_query = "SELECT session_id, AVG(user_feedback) FROM IRProject4Table WHERE user_feedback IS NOT NULL and session_id IS NOT NULL GROUP BY session_id"
-    records = run_query(db, sql_query)
-    if records:
-        df = pd.DataFrame(records, columns=['session_id', 'user_feedback'])
-        
+    try:
+        df = pd.read_csv("relevance_by_user.csv", sep="\t")
+    except FileNotFoundError:
+        df = None
+    if df:
         df_new = pd.cut(df['user_feedback'], bins=[0, 0.3, 0.5, 0.75, 1],
         labels=['irrelevant', 'somewhat relevant', 'relevant', 'highly relevant'])
         pie_df = (df_new.value_counts()/len(df)).to_frame().reset_index()
