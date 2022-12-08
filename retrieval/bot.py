@@ -212,10 +212,10 @@ class Chatbot():
             
             resp['answer'] = self.fetch_answer_from_resp(resp, bot_personality)
             
-            resp['query_id'] = DB.insert_row(session_id=session_id, question=query_text, 
-                                             answer=resp['answer'], classifier=int(resp['class_pred'] > cc_class_thresh),
-                                             classifier_probability=resp['class_pred'], top_ten_retrieved=resp['docs'], total_retrieved=resp['total_retrieved'],
-                                             selected_topic=reddit_topic_filter, selected_bot_personality = bot_personality)
+            resp['query_id'] = 40000 #DB.insert_row(session_id=session_id, question=query_text, 
+                                     #        answer=resp['answer'], classifier=int(resp['class_pred'] > cc_class_thresh),
+                                      #       classifier_probability=resp['class_pred'], top_ten_retrieved=resp['docs'], total_retrieved=resp['total_retrieved'],
+                                       #      selected_topic=reddit_topic_filter, selected_bot_personality = bot_personality)
             if core_name == 'Reddit':
                 resp['explain'] = {'index_queried': 'Reddit', 
                                    'classifier_prob': 1-resp['class_pred'], 'rare_terms_boosted': self.rt, 'entities_boosted': self.ents,

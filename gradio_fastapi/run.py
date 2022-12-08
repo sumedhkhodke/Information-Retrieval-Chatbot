@@ -78,7 +78,7 @@ try:
         if q_id=='': return "You need to use the chatbot to get a response to provide its feedback."
         feedback_dict={'Satisfactory':1,'Not satisfactory':0}
         feedback=feedback_dict[feedback]
-        bot.update_feedback(DB, q_id,feedback)
+        # bot.update_feedback(DB, q_id,feedback)
         return None
 
     def reset_personality_dropdown():
@@ -115,13 +115,13 @@ try:
 
         with gr.Tab("Visualizations"):
             gr.Markdown("Understanding the IR model")
-            srbt = partial(vu.show_relevance_by_topic, DB)
-            srbd = partial(vu.show_relevance_by_database, DB)
-            srbu = partial(vu.show_relevance_by_user, DB)
+            # srbt = partial(vu.show_relevance_by_topic, DB)
+            # srbd = partial(vu.show_relevance_by_database, DB)
+            # srbu = partial(vu.show_relevance_by_user, DB)
 
-            srbt()
-            srbd()
-            srbu()
+            # srbt()
+            # srbd()
+            # srbu()
             # plot1 = gr.Plot(srbt)
             # plot2 = gr.Plot(srbd)
             # plot3 = gr.Plot(srbu)
