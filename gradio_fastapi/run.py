@@ -127,9 +127,9 @@ try:
             # plot3 = gr.Plot(srbu)
 
             rel_path_word_clouds = "./word_clouds_2/"
-            plot1 = gr.Image(label='Relevance of responses by Topic', value=rel_path_word_clouds + 'srbt.png',shape=(10,10))#.style(height=560, width=750)
-            plot2 = gr.Image(label='Relevance of responses by Database Queried', value=rel_path_word_clouds + 'srbd.png',shape=(10,10))#.style(height=560, width=750)
-            plot3 = gr.Image(label='Relevance of responses as judged by Users', value=rel_path_word_clouds + 'srbu.png',shape=(10,10))#.style(height=560, width=750)
+            plot1 = gr.Image(label='Relevance of responses by Topic', value=rel_path_word_clouds + 'srbt.png',shape=(5,7)).style(height=560, width=750)
+            plot2 = gr.Image(label='Relevance of responses by Database Queried', value=rel_path_word_clouds + 'srbd.png',shape=(5,7)).style(height=560, width=750)
+            plot3 = gr.Image(label='Relevance of responses as judged by Users', value=rel_path_word_clouds + 'srbu.png',shape=(5,7)).style(height=560, width=750)
 
             plot4 = gr.Image(label='WordCloud for topic - Education',value=rel_path_word_clouds + 'word_cloud_edu_2.png',shape=(10,10)).style(height=560, width=750)
             plot4 = gr.Image(label='WordCloud for topic - Healthcare',value=rel_path_word_clouds + 'word_cloud_health_2.png',shape=(10,10)).style(height=560, width=750)

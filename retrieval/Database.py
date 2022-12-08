@@ -55,7 +55,7 @@ class Database:
         print("1 record inserted, ID:", self.mycursor.lastrowid)
         
         
-    def update_feedback_by_id(self, feedback, id):
+    def update_feedback_by_id(self, id, feedback):
     
         sql = f"UPDATE {self.table_name} SET user_feedback = {feedback} WHERE id = {id}"
         # val = column_value
