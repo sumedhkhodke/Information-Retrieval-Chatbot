@@ -25,17 +25,19 @@ def show_relevance_by_topic(db):
     if df is not None:
         # plt.bar(df['topic'], df['user_feedback'])
         fig = plt.figure(figsize=(5, 7))
+        print(df)
         df.plot(kind='bar', legend=False, width=0.5, x='topic')
         plt.xticks(rotation=0)
         # plt.bar_label()
         plt.title('Retrieval Relevance per Topic', pad=15, fontsize=18, fontweight='bold')
         plt.xlabel('Topics', labelpad=12, size=15)
         plt.ylabel('% Relevance from user feedback', labelpad=12, size=15)
-        fig.subplots_adjust(bottom=0.5)
+        fig.subplots_adjust(bottom=0.8)
         # fig.show()
     else:
         fig=plt.figure()
         plt.title('Retrieval Relevance per Topic (Insufficient data)', pad=15, fontsize=18, fontweight='bold')
+    plt.savefig('word_clouds_2/srbt.png')
     return fig
 
 def show_relevance_by_database(db):
@@ -44,7 +46,7 @@ def show_relevance_by_database(db):
     except FileNotFoundError:
         df = None
     if df is not None:
-        df.loc[:, 'Retrieval Index'] = df['Retrieval Index'].map({'1': 'Chitchat', '0': 'Reddit'})
+        df.loc[:, 'Retrieval Index'] = df['Retrieval Index'].map({'1': 'Chitchat', '0': 'Reddit', 1: 'Chitchat', 0: 'Reddit'})
         fig = plt.figure(figsize=(5, 7))
         df.plot(kind='bar', legend=False, width=0.3, x='Retrieval Index')
         plt.xticks(rotation=0)
@@ -52,11 +54,12 @@ def show_relevance_by_database(db):
         plt.title('Retrieval Relevance per Database', pad=15, fontsize=18, fontweight='bold')
         plt.xlabel('Database', labelpad=10, size=15)
         plt.ylabel('% Relevance from user feedback', labelpad=12, size=15)
-        fig.subplots_adjust(bottom=0)
+        fig.subplots_adjust(bottom=0.8)
     # fig.show()
     else:
         fig=plt.figure()
         plt.title('Retrieval Relevance per Database (Insufficient data)', pad=15, fontsize=18, fontweight='bold')
+    plt.savefig('word_clouds_2/srbd.png')
     return fig
 
 def show_relevance_by_user(db):
@@ -101,6 +104,7 @@ def show_relevance_by_user(db):
     else:
         fig=plt.figure()
         plt.title('User Relevance Assessment (Insufficient data)', pad=15, fontsize=18, fontweight='bold')
+    fig.savefig('word_clouds_2/srbu.png')
     return fig
 
 
@@ -195,7 +199,7 @@ def show_wordcloud_by_Technology():
 
 
 # TEST ALL VIZ
-# show_relevance_by_topic()
-# show_relevance_by_database()
-# show_relevance_by_user()
+show_relevance_by_topic(None)
+show_relevance_by_database(None)
+show_relevance_by_user(None)
 # show_wordcloud_by_topic()

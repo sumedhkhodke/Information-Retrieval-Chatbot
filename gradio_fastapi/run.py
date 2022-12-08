@@ -118,16 +118,19 @@ try:
             srbt = partial(vu.show_relevance_by_topic, DB)
             srbd = partial(vu.show_relevance_by_database, DB)
             srbu = partial(vu.show_relevance_by_user, DB)
+
+            srbt()
+            srbd()
+            srbu()
             # plot1 = gr.Plot(srbt)
             # plot2 = gr.Plot(srbd)
             # plot3 = gr.Plot(srbu)
 
-            # @ JAY USE THESE BELOW PLOTS, for reference https://gradio.app/docs/#plot
-            plot1 = gr.Plot(value=srbt,label='Relevance of responses by Topic')
-            plot2 = gr.Plot(value=srbd,label='Relevance of responses by Database Queried')
-            plot3 = gr.Plot(value=srbu,label='Relevance of responses as judged by Users')
-
             rel_path_word_clouds = "./word_clouds_2/"
+            plot1 = gr.Image(label='Relevance of responses by Topic', value=rel_path_word_clouds + 'srbt.png',shape=(10,10))#.style(height=560, width=750)
+            plot2 = gr.Image(label='Relevance of responses by Database Queried', value=rel_path_word_clouds + 'srbd.png',shape=(10,10))#.style(height=560, width=750)
+            plot3 = gr.Image(label='Relevance of responses as judged by Users', value=rel_path_word_clouds + 'srbu.png',shape=(10,10))#.style(height=560, width=750)
+
             plot4 = gr.Image(label='WordCloud for topic - Education',value=rel_path_word_clouds + 'word_cloud_edu_2.png',shape=(10,10)).style(height=560, width=750)
             plot4 = gr.Image(label='WordCloud for topic - Healthcare',value=rel_path_word_clouds + 'word_cloud_health_2.png',shape=(10,10)).style(height=560, width=750)
             plot4 = gr.Image(label='WordCloud for topic - Environment',value=rel_path_word_clouds + 'word_cloud_env_2.png',shape=(10,10)).style(height=560, width=750)
