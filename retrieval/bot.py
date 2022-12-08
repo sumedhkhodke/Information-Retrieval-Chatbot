@@ -198,7 +198,7 @@ class Chatbot():
         
         
         if len(query_text.split()) == 1 and query_text in qa.keys():
-            return {'class_pred':1,'summary':np.random.choice(qa[query_text])}
+            return {'class_pred':1,'summary':np.random.choice(qa[query_text]),'query_id':4000}
         else:
             resp = self.search_index(core_name, query_text, reddit_topic_filter, bot_personality)
             resp['class_pred'] = class_pred
