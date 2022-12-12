@@ -22,7 +22,7 @@ authors:
     family-names: Pradhan
     email: evapradh@buffalo.edu
 repository-code: >-
-  https://github.com/sumedhkhodke/CSE_535_Information_Retrieval-
+  https://github.com/sumedhkhodke/CSE_535_Information_Retrieval
 abstract: >-
   This project creates an end-to-end retrieval-based
   chatbot capable of conversing in 5 predefined
