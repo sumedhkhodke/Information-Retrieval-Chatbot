@@ -11,15 +11,15 @@ Run the app using <br>
 `uvicorn run:app` <br>
 
 ## Project report and demo
-The project report and more details can be found in the file **IR_project_report.pdf** and demo video can be found as **demo_video.mp4**.
+The project report and more details can be found in the file **TheCodeLinguists.pdf** and demo video can be found as **demo_video.mp4**.
 
 ## How to Cite This Repository <a id="citing"></a>
-If you use code from this repository, please cite the following reference:
+If you use code from this repository, please cite using the CITATION.cff file or use the following reference:
 
 ```
 @software{
   title = {Multi-topic Information Retrieval Chatbot by TheCodeLinguists},
-  author = {Khodke, Sumedh and Nekkalapudi, Praneeth and Lal, Jay and Pradhan, Eva},
+  author = {Nekkalapudi, Praneeth and Khodke, Sumedh and Lal, Jay and Pradhan, Eva},
   url = {https://github.com/sumedhkhodke/CSE_535_Information_Retrieval-},
   version = {1.0},
   year = {2022},
