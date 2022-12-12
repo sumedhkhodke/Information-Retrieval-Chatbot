@@ -1,0 +1,40 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Multi-topic Information Retrieval Chatbot
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Nekkalapudi
+    family-names: Praneeth
+    email: pnekkala@buffalo.edu
+  - given-names: Sumedh
+    family-names: Sumedh
+    email: sumedhk@buffalo.edu
+    orcid: 'https://orcid.org/0000-0002-2580-3075'
+  - given-names: Jay
+    family-names: Lal
+    email: jayashok@buffalo.edu
+  - given-names: Eva
+    family-names: Pradhan
+    email: evapradh@buffalo.edu
+repository-code: >-
+  https://github.com/sumedhkhodke/CSE_535_Information_Retrieval-
+abstract: >-
+  This project creates an end-to-end retrieval-based
+  chatbot capable of conversing in 5 predefined
+  topics (Politics, Environment, Education,
+  Healthcare, and Technology).
+
+  Additionally, the chatbot should also be able to
+  carry out general conversations. Response
+
+  depends on retrieval as opposed to generative
+  chatbot models.
+keywords:
+  - Information Retrieval
+license: MIT
+date-released: '2022-12-07'
