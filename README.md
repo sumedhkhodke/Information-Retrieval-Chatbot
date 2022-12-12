@@ -17,7 +17,7 @@ If you use code from this repository, please cite using the CITATION.cff file or
 @software{
   title = {Multi-topic Information Retrieval Chatbot by TheCodeLinguists},
   author = {Nekkalapudi, Praneeth and Khodke, Sumedh and Lal, Jay and Pradhan, Eva},
-  url = {https://github.com/sumedhkhodke/CSE_535_Information_Retrieval-},
+  url = {https://github.com/sumedhkhodke/CSE_535_Information_Retrieval},
   version = {1.0},
   year = {2022},
 }
