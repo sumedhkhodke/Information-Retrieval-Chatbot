@@ -10,9 +10,6 @@ Within a virtual env, nstall the requirements from req.txt using <br>
 Run the app using <br>
 `uvicorn run:app` <br>
 
-## Project report and demo
-The project report and more details can be found in the file **TheCodeLinguists.pdf** and demo video can be found as **demo_video.mp4**.
-
 ## How to Cite This Repository <a id="citing"></a>
 If you use code from this repository, please cite using the CITATION.cff file or use the following reference:
 
