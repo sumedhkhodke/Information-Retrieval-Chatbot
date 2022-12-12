@@ -1,18 +1,13 @@
 #global configurations
 
-HOST = "34.125.24.152"
+HOST = ''#add ur IP here
 PORT = 8983
-DB_HOST = "34.125.158.59" # SUMEDH's Instance
+DB_HOST = "" # add your IP here
 DB_USER = 'backend'
-# CORE_REDDIT = 'REDDIT'
-# CORE_CC = 'CHITCHAT'
 CORE_REDDIT = 'Reddit'
 CORE_CC = 'Chitchat'
 RETR_PATH = "../retrieval/"
 DB_name = 'IRProject4Database'
-# DB_user = 'root'
-# DB_pw = 'p4'
-
 DB_name = 'IRProject4Database'
 DB_user = 'backend'
 DB_pw = 'p4'
